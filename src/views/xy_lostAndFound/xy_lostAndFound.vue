@@ -5,16 +5,16 @@
         <el-input v-model="listQuery.title" placeholder="标题搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="getRole" />
         <!-- 搜索按钮 -->
         <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="findAll(listQuery)">标题搜索</el-button>
-        <el-date-picker class="filter-item" type="datetime" placeholder="选择开始时间" v-model="listQuery.mgrQueryLostRequest.startTime" style="width: 13%;" @change ="findAll(listQuery)"></el-date-picker>
+        <el-date-picker class="filter-item" type="datetime" placeholder="选择开始时间" v-model="listQuery.mgrQueryLostRequest.startTime" style="width: 13%;" @change="findAll(listQuery)"></el-date-picker>
         <label class="filter-item">----</label>
-        <el-date-picker class="filter-item" type="datetime" placeholder="选择结束时间" v-model="listQuery.mgrQueryLostRequest.endTime" style="width: 13 %;" @change ="findAll(listQuery)" ></el-date-picker>
+        <el-date-picker class="filter-item" type="datetime" placeholder="选择结束时间" v-model="listQuery.mgrQueryLostRequest.endTime" style="width: 13 %;" @change="findAll(listQuery)"></el-date-picker>
 
-        <el-select class="filter-item" v-model="listQuery.mgrQueryLostRequest.category" placeholder="请选择类型" @change ="findAll(listQuery)">
+        <el-select class="filter-item" v-model="listQuery.mgrQueryLostRequest.category" placeholder="请选择类型" @change="findAll(listQuery)">
             <el-option label="" value=""></el-option>
             <el-option label="丢失物品" :value=1></el-option>
             <el-option label="捡到物品" :value=2></el-option>
         </el-select>
-        <el-select class="filter-item" v-model="listQuery.mgrQueryLostRequest.state" placeholder="请选择失物招领状态 " @change ="findAll(listQuery)">
+        <el-select class="filter-item" v-model="listQuery.mgrQueryLostRequest.state" placeholder="请选择失物招领状态 " @change="findAll(listQuery)">
             <el-option label="" value=""></el-option>
             <el-option label="未审核通过" value="0"></el-option>
             <el-option label="未解决" value="1"></el-option>
@@ -23,7 +23,7 @@
 
         </el-select>
 
-        <el-input v-model="listQuery.mgrQueryLostRequest.userId" placeholder="用户名（ID）" style="width: 200px;" class="filter-item"  @change ="findAll(listQuery)"/>
+        <el-input v-model="listQuery.mgrQueryLostRequest.userId" placeholder="用户名（ID）" style="width: 200px;" class="filter-item" @change="findAll(listQuery)" />
         <!-- <el-input v-model="listQuery.mgrQueryLostRequest.schoolId" placeholder="学校名（ID）" style="width: 200px;" class="filter-item" @change ="findAll(listQuery)"/> -->
     </div>
 
@@ -36,13 +36,11 @@
             </template>
         </el-table-column>
         <!-- 一列的结束 -->
-          <el-table-column label="序号" prop="" width="180" align="center">
+        <el-table-column label="序号" prop="" width="180" align="center">
             <template slot-scope="scope">
-              <span v-text="getIndex(scope.$index)"> </span>
+                <span v-text="getIndex(scope.$index)"> </span>
             </template>
-          </el-table-column>
-
-        
+        </el-table-column>
 
         <el-table-column label="学校ID（名称）" width align="center">
             <template slot-scope="{ row }">
@@ -54,15 +52,15 @@
                 <span>{{ row.userName }}</span>
             </template>
         </el-table-column>
-         <el-table-column label="标题"  align="center">
+        <el-table-column label="标题" align="center">
             <template slot-scope="{ row }">
                 <span>{{ row.title }}</span>
             </template>
         </el-table-column>
-          <el-table-column prop="image" label="封面" align="center" width="200px">
+        <el-table-column prop="image" label="封面" align="center" width="200px">
             <!-- 图片的显示 -->
             <template slot-scope="scope">
-                <img :src="scope.row.pic" width="100%" height="100px"/>
+                <img :src="scope.row.pic" width="100%" height="100px" />
             </template>
         </el-table-column>
         <el-table-column label="地点" width align="center">
@@ -70,17 +68,16 @@
                 <span>{{ row.place }}</span>
             </template>
         </el-table-column>
-      <el-table-column label="发布时间" class-name="status-col" width="150">
-        <template slot-scope="{ row }">
-          <span>{{ row.createtime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
-        </template>
-      </el-table-column>
-           <el-table-column label="类型" width align="center">
+        <el-table-column label="发布时间" class-name="status-col" width="150">
+            <template slot-scope="{ row }">
+                <span>{{ row.createtime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="类型" width align="center">
             <template slot-scope="{ row }">
                 <span style="border:2px solid yellow;">{{ row.category }}</span>
             </template>
         </el-table-column>
-
 
         <el-table-column label="发布状态" width align="center">
             <template slot-scope="{ row }">
@@ -88,7 +85,7 @@
                     {{row.state}}</el-button>
             </template>
         </el-table-column>
-         <el-table-column label="删除状态" width align="center">
+        <el-table-column label="删除状态" width align="center">
             <template slot-scope="{ row }">
                 <el-button type="danger" size="small" @click="handleUpdate(row)" :disabled=row.dshow>
                     {{row.dstate}}</el-button>
@@ -100,16 +97,12 @@
             </template>
         </el-table-column> -->
 
-       
-        
-     
-      
-
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <!-- 右边按钮区域 -->
             <template slot-scope="{ row }">
                 <el-button type="primary" size="small" @click="handleUpdate(row)">
-                    编辑</el-button>
+                    编辑
+                </el-button>
                 <!-- <el-button type="danger" size="small" @click="handleDelete(row, 'draft')">删除</el-button> -->
 
             </template>
@@ -188,13 +181,12 @@ export default {
                 mgrQueryLostRequest: {
                     category: "",
                     endTime: "",
-                    schoolId: [ 
-                    ],
+                    schoolId: [],
                     startTime: "",
                     state: "",
                     userId: ""
                 },
-                title:"",
+                title: "",
             },
             importanceOptions: [1, 2, 3],
             calendarTypeOptions,
@@ -249,14 +241,14 @@ export default {
         // this.getRoutes();
     },
     methods: {
-       
+
         //获取表格序号
-      getIndex($index) {
-        //表格序号
-        return (this.listQuery.page - 1) * this.listQuery.size + $index + 1
-      },
+        getIndex($index) {
+            //表格序号
+            return (this.listQuery.page - 1) * this.listQuery.size + $index + 1
+        },
         async findAll(data) {
-          
+
             this.listLoading = true;
             const res = await findAll(data);
             const item = res.queryResult.list;
@@ -266,22 +258,22 @@ export default {
                 const temp = value;
                 if (temp.state == 0) {
                     temp.dstate = "未删除"
-                    temp.dshow=false
+                    temp.dshow = false
                     temp.state = "未发布"
                     temp.show = false
                 } else if (temp.state == 1) {
                     temp.dstate = "未删除"
-                      temp.dshow=false
+                    temp.dshow = false
                     temp.state = "已发布"
                     temp.show = true
                 } else if (temp.state == 2) {
                     temp.dstate = "未删除"
-                      temp.dshow=false
+                    temp.dshow = false
                     temp.state = "已发布"
                     temp.show = true
                 } else if (temp.state == 3) {
                     temp.dstate = "已删除"
-                      temp.dshow=true
+                    temp.dshow = true
                     temp.state = "未发布"
                     temp.show = false
                 }
@@ -369,13 +361,19 @@ export default {
             });
         },
         handleUpdate(row) {
-            this.temp = Object.assign({}, row); // copy obj
-            console.log(this.temp);
-            this.dialogStatus = "update";
-            this.dialogFormVisible = true;
-            this.$nextTick(() => {
-                this.$refs["dataForm"].clearValidate();
-            });
+            // this.temp = Object.assign({}, row); // copy obj
+            // console.log(this.temp);
+            // this.dialogStatus = "update";
+            // this.dialogFormVisible = true;
+            // this.$nextTick(() => {
+            //     this.$refs["dataForm"].clearValidate();
+            // });
+            this.$router.push({
+                name: 'editLostAndFound',
+                query: {
+                    id: row.id
+                }
+            })
         },
 
         async handleUpdatePer(row) {
