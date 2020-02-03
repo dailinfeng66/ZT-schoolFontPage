@@ -7,6 +7,16 @@ export function findAll(data1) {
     data: data1.mgrQueryLostRequest
   })
 }
+export function getInfo(id) {
+  return request({
+    url: '/mgr/lost/'+id,
+    method: 'get',
+    // params: {
+    //   roleId
+    // }
+  })
+}
+
 export function getRole(roleId) {
   return request({
     url: '/role/getRole',

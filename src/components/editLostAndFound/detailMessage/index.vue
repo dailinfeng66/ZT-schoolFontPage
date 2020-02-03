@@ -4,7 +4,7 @@
         <div class="col-content">
             <div class="row">
                 <div class="row-title">标题:</div>
-                <el-input placeholder="title" v-model="input" :disabled="false" class="input">
+                <el-input placeholder="title" v-model="info.title" :disabled="false" class="input">
                 </el-input>
             </div>
         </div>
@@ -12,12 +12,39 @@
         <div class="col-content">
             <div class="row">
                 <div class="row-title">地点:</div>
-                <el-input placeholder="place" v-model="input" :disabled="false" class="input">
+                <el-input placeholder="place" v-model="info.place" :disabled="false" class="input">
                 </el-input>
             </div>
         </div>
 
     </div>
+    <br>
+    <br>
+     <el-row>
+      <el-col :span="5"  v-for="(item,index) of info.pics" :key="index">
+        <el-card  >
+          <img
+            :src="item.picUrl"
+            class="image"
+          />
+            <div >
+              <el-button style="padding:20px" type="text" class="button">操作按钮</el-button>
+            </div>
+        </el-card>
+      </el-col>
+    </el-row>
+    <br>
+    <el-upload
+  action="https://jsonplaceholder.typicode.com/posts/"
+  list-type="picture-card"
+  :on-preview="handlePictureCardPreview"
+  :on-remove="handleRemove">
+  <i class="el-icon-plus"></i>
+</el-upload>
+<el-dialog :visible.sync="dialogVisible">
+  <img width="100%" :src="dialogImageUrl" alt="">
+</el-dialog>
+    
     <!-- <div class="detail-content">
         <div class="detail-content-title">详细内容:</div>
         <el-input placeholder="content" v-model="input" :disabled="false" class="input-specia">
@@ -34,12 +61,27 @@
 </template>
 
 <script>
+import {
+    getInfo,
+} from "@/api/xy_lostAndFound";
 import Tinymce from '@/components/Tinymce'
 export default {
     data() {
         return {
             dialogImageUrl: '',
-            dialogVisible: false
+            dialogVisible: false,
+             info:{
+                // category : "",
+                // content:"",
+                // createtime:"",
+                // id:"",
+                // pics:"",
+                // place:"",
+                // schoolId:"",
+                // state:"",
+                // userId:"",
+                // userName:"",
+            },
         };
     },
     methods: {
@@ -49,8 +91,20 @@ export default {
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
+        },
+         async getRouterData() {
+            // 那边编辑的信息的id
+            this.id = this.$route.query.id
+            const res = await getInfo(this.id)
+            this.info = res.lost;
+      
+           
         }
     },
+      created() {
+        this.getRouterData();
+    },
+  
     components: {
         Tinymce
     }
@@ -79,7 +133,12 @@ export default {
     //         margin: 3% 3% 3% 0;
     //     }
     // }
-
+    .image {
+    width: 200px;
+    height: 200px;
+    display: block;
+    float: left;
+  }
     .item-content {
         display: flex;
 

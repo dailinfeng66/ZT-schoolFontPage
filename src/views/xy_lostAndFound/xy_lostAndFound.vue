@@ -374,6 +374,7 @@ export default {
                     id: row.id
                 }
             })
+           
         },
 
         async handleUpdatePer(row) {

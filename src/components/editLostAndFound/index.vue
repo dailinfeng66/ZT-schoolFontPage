@@ -14,6 +14,7 @@
 </template>
 
 <script>
+
 import baseMessage from '@/components/editLostAndFound/baseMessage'
 import detailMessage from '@/components/editLostAndFound/detailMessage'
 export default {
@@ -32,7 +33,7 @@ export default {
     methods: {
         getRouterData() {
             // 那边编辑的信息的id
-            this.id = this.$route.params.id
+            this.id = this.$route.query.id
         }
     },
 
