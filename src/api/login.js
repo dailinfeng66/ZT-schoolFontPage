@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function loginCheckData(data1) {
     return request({
-        url: '/login/tologin',
+       url: '/admin/login',
         method: 'post',
         params:  data1 
     })

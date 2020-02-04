@@ -11,7 +11,7 @@
             <span class="svg-container">
                 <svg-icon icon-class="user" />
             </span>
-            <el-input ref="username" v-model="loginForm.account" :placeholder="$t('login.username')" name="username" type="text" tabindex="1" autocomplete="on" />
+            <el-input ref="username" v-model="loginForm.loginName" :placeholder="$t('login.username')" name="username" type="text" tabindex="1" autocomplete="on" />
         </el-form-item>
 
         <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
@@ -19,7 +19,7 @@
                 <span class="svg-container">
                     <svg-icon icon-class="password" />
                 </span>
-                <el-input :key="passwordType" ref="password" v-model="loginForm.pass" :type="passwordType" :placeholder="$t('login.password')" name="password" tabindex="2" autocomplete="on" />
+                <el-input :key="passwordType" ref="password" v-model="loginForm.loginPassword" :type="passwordType" :placeholder="$t('login.password')" name="password" tabindex="2" autocomplete="on" />
 
                 <!--         @keyup.native="checkCapslock"
             @blur="capsTooltip = false"
@@ -79,8 +79,8 @@ export default {
         };
         return {
             loginForm: {
-                account: "yujialin",
-                pass: "123456",
+                loginName: "xka",
+                loginPassword: "123",
             },
             loginRules: {
                 username: [{
@@ -139,33 +139,30 @@ export default {
             }, {});
         },
         handleLogin() {
-            this.$router.push({
-                path: this.redirect || "/",
-                query: this.otherQuery
+
+            this.$refs.loginForm.validate(async valid => {
+                if (valid) {
+                    this.loading = true;
+
+                    // const res = await loginCheckData(this.loginForm);
+                    this.$store
+                        .dispatch("user/login", this.loginForm)
+                        .then(() => {
+                            this.$router.push({
+                                path: this.redirect || "/",
+                                query: this.otherQuery
+                            });
+                            this.loading = false;
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                        });
+
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
             });
-            // this.$refs.loginForm.validate(async valid => {
-            //     if (valid) {
-            //         this.loading = true;
-
-            //         // const res = await loginCheckData(this.loginForm);
-            //         this.$store
-            //             .dispatch("user/login", this.loginForm)
-            //             .then(() => {
-            //                 this.$router.push({
-            //                     path: this.redirect || "/",
-            //                     query: this.otherQuery
-            //                 });
-            //                 this.loading = false;
-            //             })
-            //             .catch(() => {
-            //                 this.loading = false;
-            //             });
-
-            //     } else {
-            //         console.log("error submit!!");
-            //         return false;
-            //     }
-            // });
         }
     }
 };

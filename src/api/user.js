@@ -9,7 +9,7 @@ import request from '@/utils/request'
 // }
 export function login(data1) {
   return request({
-    url: '/login/tologin',
+    url: '/admin/login',
     method: 'post',
     params: data1
   })
@@ -20,7 +20,9 @@ export function getInfo(token) {
   return request({
     url: '/user/info',
     method: 'get',
-    params: { token }
+    params: {
+      token
+    }
   })
 }
 

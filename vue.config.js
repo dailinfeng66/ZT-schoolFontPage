@@ -14,13 +14,12 @@ module.exports = {
   devServer: {
 
     proxy: {
-
       '/dev-api': {
-        target: 'http://localhost:20101',
+        target: 'http://127.0.0.1:20106',
         changeOrigin: true,
         pathRewrite: {
           '^/dev-api': ''
-        } 
+        }
       }
     }
 
