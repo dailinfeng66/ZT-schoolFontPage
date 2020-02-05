@@ -80,7 +80,7 @@ export default {
         return {
             loginForm: {
                 loginName: "xka",
-                loginPassword: "123",
+                loginPassword: "123"
             },
             loginRules: {
                 username: [{
@@ -144,21 +144,25 @@ export default {
                 if (valid) {
                     this.loading = true;
                     // console.log("ASD")
-                    const res = await loginCheckData(this.loginForm);
+                    const temp1 = {
+                        loginName: this.loginForm.loginName,
+                        loginPassword: this.loginForm.loginPassword
+                    }
+                    // const res = await loginCheckData(temp1);
                     // console.log(res)
-
-                    // this.$store
-                    //     .dispatch("user/login", this.loginForm)
-                    //     .then(() => {
-                    //         this.$router.push({
-                    //             path: this.redirect || "/",
-                    //             query: this.otherQuery
-                    //         });
-                    //         this.loading = false;
-                    //     })
-                    //     .catch(() => {
-                    //         this.loading = false;
-                    //     });
+                    this.$store
+                        .dispatch("user/login", temp1)
+                        .then(() => {
+                            // this.$router.push({
+                            //     path: this.redirect || "/",
+                            //     query: this.otherQuery
+                            // });
+                            console.log("res" + res);
+                            this.loading = false;
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                        });
 
                 } else {
                     console.log("error submit!!");

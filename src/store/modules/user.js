@@ -43,19 +43,26 @@ const actions = {
   login({
     commit
   }, userInfo) {
+    const res = login(userInfo);
+    console.log("登录接口请求 返回")
+    console.log(res)
+    console.log("登录接口请求 返回")
     // const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login(userInfo).then(response => {
-        console.log(response)
-        // const { data } = response
-        console.log(response.token)
-        commit('SET_TOKEN', response.token)
-        setToken(response.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
+    const token = "Bearer " + res.token;
+    commit('SET_TOKEN', token)
+    setToken(token)
+    return res
+    // return new Promise((resolve, reject) => {
+    //   login(userInfo).then(response => {
+    //     console.log(response)
+    //     console.log(response.token)
+    //     commit('SET_TOKEN', response.token)
+    //     setToken(response.token)
+    //     resolve()
+    //   }).catch(error => {
+    //     reject(error)
+    //   })
+    // })
   },
 
   // get user info

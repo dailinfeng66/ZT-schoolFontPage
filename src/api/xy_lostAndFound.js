@@ -2,7 +2,7 @@ import request from '@/utils/request'
 // 从这儿开始
 export function findAll(data1) {
   return request({
-    url: '/mgr/lost/list/'+data1.page+"/"+data1.size+"/"+data1.title,
+    url: '/lost/mgr/lost/list/'+data1.page+"/"+data1.size+"/"+data1.title,
     method: 'post',
     data: data1.mgrQueryLostRequest
   })
