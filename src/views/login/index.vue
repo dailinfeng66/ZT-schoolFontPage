@@ -152,12 +152,17 @@ export default {
                     // console.log(res)
                     this.$store
                         .dispatch("user/login", temp1)
-                        .then(() => {
-                            // this.$router.push({
-                            //     path: this.redirect || "/",
-                            //     query: this.otherQuery
-                            // });
-                            console.log("res" + res);
+                        .then(res => {
+
+                            if (res.success == true) {
+                                this.$router.push({
+                                    path: this.redirect || "/",
+                                    query: this.otherQuery
+                                });
+                            } else {
+                                alert("登录失败")
+                            }
+                            console.log(res);
                             this.loading = false;
                         })
                         .catch(() => {

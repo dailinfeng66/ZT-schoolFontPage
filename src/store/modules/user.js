@@ -40,25 +40,30 @@ const mutations = {
 
 const actions = {
   // user login
-  login({
+  async login({
     commit
   }, userInfo) {
-    const res = login(userInfo);
+    const res = await login(userInfo);
     console.log("登录接口请求 返回")
     console.log(res)
     console.log("登录接口请求 返回")
     // const { username, password } = userInfo
-    const token = "Bearer " + res.token;
+    const token = "Bearer " + res.data.token;
     commit('SET_TOKEN', token)
     setToken(token)
     return res
-    // return new Promise((resolve, reject) => {
+    // const resu = new Promise((resolve, reject) => {
     //   login(userInfo).then(response => {
-    //     console.log(response)
-    //     console.log(response.token)
-    //     commit('SET_TOKEN', response.token)
-    //     setToken(response.token)
-    //     resolve()
+    //     // console.log(response.data)
+    //     if (response.data.message == "登录成功！") {
+    //       commit('SET_TOKEN', response.data.token)
+    //       setToken(response.token)
+    //       resolve()
+    //       return response;
+    //     } else {
+    //       return response;
+    //     }
+
     //   }).catch(error => {
     //     reject(error)
     //   })
