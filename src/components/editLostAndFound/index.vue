@@ -7,7 +7,9 @@
         <el-tab-pane label="详细信息管理" name="second">
             <detailMessage />
         </el-tab-pane>
-        <el-tab-pane label="社交信息管理" name="third">角色管理</el-tab-pane>
+        <el-tab-pane label="评论回复管理" name="third">
+             <commentMessage />
+        </el-tab-pane>
         <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
     </el-tabs>
 </div>
@@ -17,6 +19,7 @@
 
 import baseMessage from '@/components/editLostAndFound/baseMessage'
 import detailMessage from '@/components/editLostAndFound/detailMessage'
+import commentMessage from '@/components/editLostAndFound/commentMessage'
 export default {
     data() {
         return {
@@ -25,7 +28,8 @@ export default {
     },
     components: {
         baseMessage,
-        detailMessage
+        detailMessage,
+        commentMessage
     },
     created() {
         this.getRouterData();

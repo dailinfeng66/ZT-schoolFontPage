@@ -8,19 +8,21 @@ function resolve(dir) {
 
 const name = defaultSettings.title || 'vue Element Admin' // page title
 module.exports = {
-  publicPath: '/',
+  publicPath: './',
   outputDir: 'dist',
   lintOnSave: false,
   devServer: {
 
     proxy: {
       '/dev-api': {
-        target: 'http://117.78.2.192:3333',
+        //target: 'http://117.78.2.192:3333',
+        target:'http://localhost:20106',
         changeOrigin: true,
         pathRewrite: {
           '^/dev-api': ''
         }
-      }
+      },
+    
     }
 
   },
