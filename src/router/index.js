@@ -16,7 +16,7 @@ import merchantManage from "./modules/merchantManage";
 import shopsManage from "./modules/shopsManage";
 import orderCommentManage from "./modules/orderCommentManage";
 import xy_lostAndFound from "./modules/xy_lostAndFound";
-
+import xy_secondHand from "./modules/xy_secondHand"
 export const constantRoutes = [
   {
     path: "/redirect",
@@ -51,6 +51,7 @@ export const constantRoutes = [
    * 后面写路由
    */
   xy_lostAndFound,
+  xy_secondHand,
   // residentManage,
   // communityInfoManage,
 

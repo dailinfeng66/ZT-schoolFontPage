@@ -153,7 +153,6 @@ export default {
                     this.$store
                         .dispatch("user/login", temp1)
                         .then(res => {
-
                             if (res.success == true) {
                                 this.$router.push({
                                     path: this.redirect || "/",

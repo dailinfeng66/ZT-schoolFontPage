@@ -30,22 +30,17 @@ router.beforeEach(async (to, from, next) => {
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
-
       NProgress.done()
     } else {
-
       next()
-      // determine whether the user has obtained his permission roles through getInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         next()
       } else {
-        // next()
         try {
           // const {
           //   roles
           // } = await store.dispatch('user/getInfo')
-
           const accessRoutes = await store.dispatch('permission/generateRoutes', "admin")
           router.addRoutes(accessRoutes)
           // next({

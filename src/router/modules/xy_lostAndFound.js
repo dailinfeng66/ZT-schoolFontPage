@@ -36,18 +36,7 @@ const xy_lostAndFound = {
       },
       hidden: true
     },
-    // {
-    //     path: 'menuManage',
-    //     component: () => import('@/views/systemManage/menuManage'),
-    //     name: 'menuManage',
-    //     meta: { title: '菜单管理' }
-    // },
-    // {
-    //     path: 'configManage',
-    //     component: () => import('@/views/systemManage/configManage'),
-    //     name: 'configManage',
-    //     meta: { title: '系统配置管理 ' }
-    // }
+
   ]
 }
 export default xy_lostAndFound
