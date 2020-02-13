@@ -33,3 +33,21 @@ export function deleteCatalog(data1) {
     data: data1
   })
 }
+
+export function findGoods(data1) {
+  return request({
+    url: '/mgr/judge_second_goods/goodsInfo',
+    method: 'post',
+    data: data1
+  })
+}
+
+export function judgeGoodsPass(data1) {
+  return request({
+    url: '/mgr/judge_second_goods/accept',
+    method: 'put',
+    params: {
+      goodsId: data1
+    }
+  })
+}
