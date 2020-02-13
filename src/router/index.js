@@ -7,27 +7,17 @@ Vue.use(Router);
 import Layout from "@/layout";
 
 /* Router Modules */
-import residentManage from "./modules/residentManage";
-import couponsManage from "./modules/couponsManage";
-import packageManage from "./modules/packageManage";
-import communityInfoManage from "./modules/communityInfoManage";
-import goodsManage from "./modules/goodsManage";
-import merchantManage from "./modules/merchantManage";
-import shopsManage from "./modules/shopsManage";
-import orderCommentManage from "./modules/orderCommentManage";
+
 import xy_lostAndFound from "./modules/xy_lostAndFound";
 import xy_secondHand from "./modules/xy_secondHand"
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: "/redirect",
     component: Layout,
     hidden: true,
-    children: [
-      {
-        path: "/redirect/:path*",
-        component: () => import("@/views/redirect/index")
-      }
-    ]
+    children: [{
+      path: "/redirect/:path*",
+      component: () => import("@/views/redirect/index")
+    }]
   },
   {
     path: "/login",
@@ -38,14 +28,16 @@ export const constantRoutes = [
     path: "/",
     component: Layout,
     redirect: "/dashboard",
-    children: [
-      {
-        path: "dashboard",
-        component: () => import("@/views/dashboard/index"),
-        name: "Dashboard",
-        meta: { title: "dashboard", icon: "dashboard", affix: true }
+    children: [{
+      path: "dashboard",
+      component: () => import("@/views/dashboard/index"),
+      name: "Dashboard",
+      meta: {
+        title: "dashboard",
+        icon: "dashboard",
+        affix: true
       }
-    ]
+    }]
   },
   /**
    * 后面写路由
@@ -397,7 +389,9 @@ export const constantRoutes = [
 const createRouter = () =>
   new Router({
     // mode: 'history', // require service support
-    scrollBehavior: () => ({ y: 0 }),
+    scrollBehavior: () => ({
+      y: 0
+    }),
     routes: constantRoutes
   });
 
