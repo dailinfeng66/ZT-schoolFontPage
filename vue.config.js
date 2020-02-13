@@ -16,13 +16,15 @@ module.exports = {
     proxy: {
       '/dev-api': {
         //target: 'http://117.78.2.192:3333',
-        target:'http://localhost:20106',
+        target:'http://localhost:8080',
+        // target: 'http://121.36.36.156:9001',
+          // target: 'http://121.36.36.156:9001',
         changeOrigin: true,
         pathRewrite: {
           '^/dev-api': ''
         }
       },
-    
+
     }
 
   },
