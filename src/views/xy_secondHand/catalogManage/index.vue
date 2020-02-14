@@ -83,7 +83,7 @@ import {
     insertCatalog,
     updateCatalog,
     deleteCatalog
-} from "@/api/xy_sceondhand";
+} from "@/api/xy_secondhand";
 import waves from "@/directive/waves"; // waves directive
 import {
     parseTime

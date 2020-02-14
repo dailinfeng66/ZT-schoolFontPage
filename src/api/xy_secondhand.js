@@ -51,3 +51,31 @@ export function judgeGoodsPass(data1) {
     }
   })
 }
+
+export function addOrder(info) {
+  return request({
+    url: '/mgr/order',
+    method: 'post',
+    data: info
+  })
+}
+export function findOrder(info) {
+  return request({
+    url: '/mgr/order/order_info',
+    method: 'post',
+    data: info
+  })
+}
+export function findOrderById(order_id) {
+  return request({
+    url: '/mgr/order/order_info/'+order_id,
+    method: 'get',
+  })
+}
+export function editOrderById(order_id,info) {
+  return request({
+    url: '/mgr/order/order_info/'+order_id,
+    method: 'put',
+    data: info
+  })
+}
