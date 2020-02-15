@@ -19,7 +19,7 @@
 
 import baseMessage from '@/components/editLostAndFound/baseMessage'
 import detailMessage from '@/components/editLostAndFound/detailMessage'
-import commentMessage from '@/components/editLostAndFound/commentMessage'
+import commentMessage from '@/components/commentMessage'
 export default {
     data() {
         return {
