@@ -25,6 +25,7 @@
       <!-- 下来选择框 -->
       <!-- 一级分类 -->
       <el-select
+        clearable
         @change="selectCatalog(catalogValue)"
         v-model="catalogValue"
         placeholder="一级分类"
@@ -39,6 +40,7 @@
       </el-select>
       <!-- 二级分类 -->
       <el-select
+        clearable
         @change="selectCatalog2(catalogValue2)"
         v-model="catalogValue2"
         placeholder="二级分类"
@@ -65,11 +67,11 @@
       @sort-change="sortChange"
     >
       <!-- 一列的开始 -->
-      <el-table-column label="商品ID" prop="id" align="center">
+      <!-- <el-table-column label="商品ID" prop="id" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.goodsId }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- 一列的结束 -->
       <el-table-column label="用户名" width align="center">
         <template slot-scope="{ row }">
@@ -133,12 +135,13 @@
       >
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
-          <el-button type="primary" size="small" @click="pass(row)"
-            >通过</el-button
+          <el-button type="primary" size="small" @click="edit(row)"
+            >编辑</el-button
           >
-          <el-button type="danger" size="small" @click="noPass(row)"
-            >不通过</el-button
+          <el-button type="success" size="small" @click="enterDetail(row)"
+            >进入详情</el-button
           >
+          <!-- <el-button type="success">编辑</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -364,12 +367,7 @@ export default {
         catalogId: "0"
       };
       const res = await findAllCatalog(temp);
-        let temp2 =   [{
-          catalogId: "",
-          name: "全部",
-          parentId: ""
-        }];
-      this.catalog1 =temp2+ res.queryResult.list;
+      this.catalog1 = res.queryResult.list;
     },
     // 查询商品信息
     async shouGoodsMsg(data) {
@@ -384,34 +382,31 @@ export default {
     // 一级分类下拉选择框选中事件   val为选中一级分类的id
     async selectCatalog(val) {
       this.listLoading = true;
+      //如果选的不是  全部  这个选项 就加载相应一级分类下的商品
       const temp = this.listQuery;
       temp.catalogId = val;
+      //设置二级下拉框的内容
+      const [res,res2] = Promis.all([findAllCatalog(temp),])
       const res = await findAllCatalog(temp); //请求二级分类信息
+      this.catalog2 = res.queryResult.list;
+      // 查找这个一级分类下的所有商品
       let conditions = {
         pn: 1,
         ps: 10,
         catalog1: ""
       };
       conditions.catalog1 = val;
-      const res1 = await findGoods(conditions);
-      this.list = res1.queryResult.list;
-      this.total = res1.queryResult.total;
-      this.catalog2 = [
-        {
-          catalogId: "",
-          name: "全部",
-          parentId: ""
-        }
-      ];
-      this.catalog2.push(res.queryResult.list); //设置二级下拉框的内容
+      const res2 = await findGoods(conditions); //请求一级分类下的商品
+      this.list = res2.queryResult.list;
+      this.total = res2.queryResult.total;
       this.listLoading = false;
     },
 
-    // 二级分类下拉选择框选中事件   val为选中一级分类的id
+    // 二级分类下拉选择框选中事件   val为选中二级分类的id
     async selectCatalog2(val) {
+      this.list = [];
       this.listLoading = true;
-      const temp = this.listQuery;
-      temp.catalogId = val;
+      //如果 的不是全部选项 就加载相应的
       let conditions = {
         pn: 1,
         ps: 10,
