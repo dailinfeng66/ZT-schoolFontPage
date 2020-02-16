@@ -26,7 +26,17 @@ const xy_secondHand = {
             meta: {
                 title: '商品管理',
                 keepAlive: false
-            }
+            },
+            children: [{
+                path: 'goodsDetails',
+                component: () =>
+                    import ('@/views/xy_secondHand/goodsManage'),
+                name: 'goodsDetails',
+                meta: {
+                    title: '商品详情',
+                    keepAlive: false
+                },
+            }]
         },
         {
             path: 'catalogManage',

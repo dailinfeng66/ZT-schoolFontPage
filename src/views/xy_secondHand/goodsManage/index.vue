@@ -18,18 +18,14 @@
         @click="getM"
         >搜索</el-button
       >
-      <!-- 添加按钮 -->
-      <!-- <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addCatalog1()">添加一级分类</el-button> -->
-      <!-- <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="addCatalog()">添加二级分类</el-button> -->
-      <!-- <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="selectCatalog1()">一级分类</el-button> -->
-      <!-- 下来选择框 -->
+
       <!-- 一级分类 -->
       <el-select
-        clearable
         @change="selectCatalog(catalogValue)"
         v-model="catalogValue"
         placeholder="一级分类"
       >
+        <el-option label="全部一级分类" value=""> </el-option>
         <el-option
           v-for="item in catalog1"
           :key="item.catalogId"
@@ -40,11 +36,11 @@
       </el-select>
       <!-- 二级分类 -->
       <el-select
-        clearable
         @change="selectCatalog2(catalogValue2)"
         v-model="catalogValue2"
         placeholder="二级分类"
       >
+        <el-option label="全部二级分类" value=""> </el-option>
         <el-option
           v-for="item in catalog2"
           :key="item.catalogId"
@@ -68,11 +64,11 @@
       @sort-change="sortChange"
     >
       <!-- 一列的开始 -->
-      <!-- <el-table-column label="商品ID" prop="id" align="center">
+      <el-table-column label="商品ID" prop="id" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.goodsId }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <!-- 一列的结束 -->
       <el-table-column label="用户名" width align="center">
         <template slot-scope="{ row }">
@@ -83,11 +79,11 @@
         prop="image"
         label="封面图片"
         align="center"
-        width="200px"
+        width="150px"
       >
         <!-- 图片的显示 -->
         <template slot-scope="scope">
-          <img :src="scope.row.goodsPic" width="100" height="100px" />
+          <img :src="scope.row.goodsPic" width="120px" height="100px" />
         </template>
       </el-table-column>
       <el-table-column label="标题" width align="center">
@@ -110,7 +106,7 @@
           <span>{{ row.catalog2 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="学校ID" width align="center">
+      <el-table-column label="学校名" width align="center">
         <template slot-scope="{ row }">
           <span>{{ row.schoolId }}</span>
         </template>
@@ -122,12 +118,16 @@
           }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="浏览量" width align="center">
+      <!-- <el-table-column label="浏览量" width align="center">
         <template slot-scope="{ row }">
           <span>{{ row.goodsBrose }}</span>
         </template>
+      </el-table-column> -->
+      <el-table-column label="状态" width align="center">
+        <template slot-scope="{ row }">
+          <span>{{ row.goodsJudgeStatus }}</span>
+        </template>
       </el-table-column>
-
       <el-table-column
         label="操作"
         align="center"
@@ -136,9 +136,9 @@
       >
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
-          <el-button type="primary" size="small" @click="edit(row)"
+          <!-- <el-button type="primary" size="small" @click="edit(row)"
             >编辑</el-button
-          >
+          > -->
           <el-button type="success" size="small" @click="enterDetail(row)"
             >进入详情</el-button
           >
@@ -376,8 +376,27 @@ export default {
       this.dataFlag = false;
       const res1 = await findGoods(data);
       let temp = res1.queryResult.list;
+      // 格式化时间和状态
       temp.map(value => {
         value.goodsReleaseTime = new Date(value.goodsReleaseTime);
+        if(value.goodsJudgeStatus=="0"){
+            value.goodsJudgeStatus="未审核"
+        }
+        if(value.goodsJudgeStatus=="1"){
+            value.goodsJudgeStatus=="已通过"
+        }
+        if(value.goodsJudgeStatus=="2"){
+          value.goodsJudgeStatus=="未通过"
+        }
+        if(value.goodsJudgeStatus=="3"){
+          value.goodsJudgeStatus=="已支付"
+        }
+        if(value.goodsJudgeStatus=="4"){
+          value.goodsJudgeStatus=="已删除"
+        }
+        if(value.goodsJudgeStatus=="5"){
+          value.goodsJudgeStatus=="已下单"
+        }
       });
       this.list = temp;
       this.total = res1.queryResult.total;
@@ -400,9 +419,15 @@ export default {
       const [res] = await Promise.all([findAllCatalog(temp)]);
       this.shouGoodsMsg(conditions);
       this.catalog2 = res.queryResult.list;
+      /**
+       * 一级分类点了一个选项(不是全部)  二级分类又点了一个选项 不论是什么
+       * 这个时候一级分类再点全部的时候要清空二级分类
+       */
+      if (this.catalogValue == "" || this.catalogValue == null) {
+        this.catalog2 = [];
+      }
       this.listLoading = false;
     },
-
     // 二级分类下拉选择框选中事件   val为选中二级分类的id
     async selectCatalog2(val) {
       this.list = [];
@@ -442,7 +467,12 @@ export default {
     },
     // 审核不通过
     async noPass(row) {},
+    //进入详情
+    enterDetail(row) {},
 
+    /**
+     * 下面的方法不知道有什么用 但是就是不能动
+     */
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
         this.pvData = response.data.pvData;
