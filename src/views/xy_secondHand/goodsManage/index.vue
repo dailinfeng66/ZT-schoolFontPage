@@ -378,26 +378,32 @@ export default {
       let temp = res1.queryResult.list;
       // 格式化时间和状态
       temp.map(value => {
+        // 转化时间
         value.goodsReleaseTime = new Date(value.goodsReleaseTime);
-        if(value.goodsJudgeStatus=="0"){
-            value.goodsJudgeStatus="未审核"
+        // 转化状态
+        if (value.goodsJudgeStatus == "0") {
+          value.goodsJudgeStatus = "未审核";
         }
-        if(value.goodsJudgeStatus=="1"){
-            value.goodsJudgeStatus=="已通过"
+        if (value.goodsJudgeStatus == "1") {
+          value.goodsJudgeStatus == "已通过";
         }
-        if(value.goodsJudgeStatus=="2"){
-          value.goodsJudgeStatus=="未通过"
+        if (value.goodsJudgeStatus == "2") {
+          value.goodsJudgeStatus == "未通过";
         }
-        if(value.goodsJudgeStatus=="3"){
-          value.goodsJudgeStatus=="已支付"
+        if (value.goodsJudgeStatus == "3") {
+          value.goodsJudgeStatus == "已支付";
         }
-        if(value.goodsJudgeStatus=="4"){
-          value.goodsJudgeStatus=="已删除"
+        if (value.goodsJudgeStatus == "4") {
+          value.goodsJudgeStatus == "已删除";
         }
-        if(value.goodsJudgeStatus=="5"){
-          value.goodsJudgeStatus=="已下单"
+        if (value.goodsJudgeStatus == "5") {
+          value.goodsJudgeStatus == "已下单";
         }
+        let temp = value.goodsPic.split(",");
+        value.goodsPic = temp[0];
+        
       });
+
       this.list = temp;
       this.total = res1.queryResult.total;
       this.dataFlag = true;
@@ -468,7 +474,9 @@ export default {
     // 审核不通过
     async noPass(row) {},
     //进入详情
-    enterDetail(row) {},
+    enterDetail(row) {
+      this.$router.push({ path: "goodsDetails", query: { id: row.goodsId } });
+    },
 
     /**
      * 下面的方法不知道有什么用 但是就是不能动

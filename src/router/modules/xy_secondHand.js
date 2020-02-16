@@ -24,19 +24,20 @@ const xy_secondHand = {
                 import ('@/views/xy_secondHand/goodsManage'),
             name: 'goodsManage',
             meta: {
-                title: '商品管理',
-                keepAlive: false
+                title: '商品管理'
+            }
+        },
+        {
+            path: 'goodsDetails',
+            component: () =>
+                import ('@/views/xy_secondHand/goodsManage/goodsDetail'),
+            name: 'goodsDetails',
+            meta: {
+                title: '商品详情',
+                noCache: true,
+                // activeMenu: '@/views/xy_secondHand/goodsManage'
             },
-            children: [{
-                path: 'goodsDetails',
-                component: () =>
-                    import ('@/views/xy_secondHand/goodsManage'),
-                name: 'goodsDetails',
-                meta: {
-                    title: '商品详情',
-                    keepAlive: false
-                },
-            }]
+            hidden: true
         },
         {
             path: 'catalogManage',
@@ -56,6 +57,7 @@ const xy_secondHand = {
                 title: '订单管理'
             }
         },
+
     ]
 }
 export default xy_secondHand
