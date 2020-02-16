@@ -20,7 +20,7 @@
 import {
     getComment,
     getReply
-} from "@/api/xy_lostAndFound"
+} from "@/api/comment"
 
 export default {
     data() {

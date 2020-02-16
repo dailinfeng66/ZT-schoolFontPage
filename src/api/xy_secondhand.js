@@ -79,3 +79,9 @@ export function editOrderById(order_id,info) {
     data: info
   })
 }
+export function findOrderByIdIncludeDES(order_id) {
+  return request({
+    url: '/mgr/order/order_info_des/'+order_id,
+    method: 'get',
+  })
+}

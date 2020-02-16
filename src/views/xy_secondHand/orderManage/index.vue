@@ -17,11 +17,11 @@
         icon="el-icon-search"
         @click="find(queryId)"
       >订单号搜索</el-button>
-      <!-- <el-date-picker
+       <el-date-picker
         class="filter-item"
         type="datetime"
-        placeholder="选择开始时间"
-        v-model="listQuery.mgrQueryLostRequest.startTime"
+        placeholder="选择下单开始时间"
+        v-model="listQuery.startOrderTime"
         style="width: 13%;"
         @change="findAll(listQuery)"
       ></el-date-picker>
@@ -29,12 +29,28 @@
       <el-date-picker
         class="filter-item"
         type="datetime"
-        placeholder="选择结束时间"
-        v-model="listQuery.mgrQueryLostRequest.endTime"
+        placeholder="选择下单结束时间"
+        v-model="listQuery.endOrderTime"
         style="width: 13 %;"
         @change="findAll(listQuery)"
       ></el-date-picker>
+       <el-input
+        class="filter-item"
+        v-model="listQuery.startPrice"
+        placeholder="请选择开始价格 "
+        @change="findAll(listQuery)"
+         style="width:  150px;"
+      ></el-input>
+        <label class="filter-item">----</label>
+         <el-input
+           style="width:  150px;"
+        class="filter-item"
+        v-model="listQuery.endPrice"
+        placeholder="请选择结束价格 "
+        @change="findAll(listQuery)"
+      ></el-input>
 
+<!--
       <el-select
         class="filter-item"
         v-model="listQuery.mgrQueryLostRequest.category"
@@ -174,8 +190,8 @@
         style="width: 400px; margin-left:50px;"
       >
         <!-- 第一个字段 -->
-        <el-form-item label="订单号">
-          <el-input v-model="temp.orderId" />
+        <el-form-item label="订单号"  >
+          <el-input v-model="temp.orderId" readonly="true"/>
         </el-form-item>
         <!-- 第二个字段 -->
         <el-form-item label="购买人">
@@ -215,7 +231,7 @@
 </template>
 
 <script>
-import { findOrder, findOrderById,editOrderById } from "@/api/xy_secondhand";
+import { findOrder, findOrderById,editOrderById,findOrderByIdIncludeDES } from "@/api/xy_secondhand";
 
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
@@ -391,7 +407,7 @@ export default {
         this.findAll(this.listQuery);
       } else {
         this.listLoading = true;
-        const res = await findOrderById(this.queryId);
+        const res = await findOrderByIdIncludeDES(this.queryId);
         const item = res.queryResult.list;
         this.list = [];
         // 遍历返回的list
