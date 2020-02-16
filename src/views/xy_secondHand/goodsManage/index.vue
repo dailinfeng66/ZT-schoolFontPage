@@ -62,6 +62,7 @@
       :data="list"
       border
       fit
+      v-if="dataFlag"
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
@@ -248,6 +249,7 @@ export default {
   },
   data() {
     return {
+      dataFlag: false,
       catalogValue: "", //分类选项的 所选值de id
       catalogValue2: "", //二级分类选项的值 的id
       catalog1: [], //一级分类选项
@@ -371,6 +373,7 @@ export default {
     },
     // 查询商品信息
     async shouGoodsMsg(data) {
+      this.dataFlag = false;
       const res1 = await findGoods(data);
       let temp = res1.queryResult.list;
       temp.map(value => {
@@ -378,17 +381,11 @@ export default {
       });
       this.list = temp;
       this.total = res1.queryResult.total;
+      this.dataFlag = true;
     },
     // 一级分类下拉选择框选中事件   val为选中一级分类的id
     async selectCatalog(val) {
       this.listLoading = true;
-      //如果选的不是  全部  这个选项 就加载相应一级分类下的商品
-      const temp = this.listQuery;
-      temp.catalogId = val;
-      //设置二级下拉框的内容
-      const [res,res2] = Promis.all([findAllCatalog(temp),])
-      const res = await findAllCatalog(temp); //请求二级分类信息
-      this.catalog2 = res.queryResult.list;
       // 查找这个一级分类下的所有商品
       let conditions = {
         pn: 1,
@@ -396,9 +393,13 @@ export default {
         catalog1: ""
       };
       conditions.catalog1 = val;
-      const res2 = await findGoods(conditions); //请求一级分类下的商品
-      this.list = res2.queryResult.list;
-      this.total = res2.queryResult.total;
+      //如果选的不是  全部  这个选项 就加载相应一级分类下的商品
+      const temp = this.listQuery;
+      temp.catalogId = val;
+      //设置二级下拉框的内容
+      const [res] = await Promise.all([findAllCatalog(temp)]);
+      this.shouGoodsMsg(conditions);
+      this.catalog2 = res.queryResult.list;
       this.listLoading = false;
     },
 
@@ -413,9 +414,7 @@ export default {
         catalog2: ""
       };
       conditions.catalog2 = val;
-      const res1 = await findGoods(conditions);
-      this.list = res1.queryResult.list;
-      this.total = res1.queryResult.total;
+      this.shouGoodsMsg(conditions);
       this.listLoading = false;
     },
     //审核通过
