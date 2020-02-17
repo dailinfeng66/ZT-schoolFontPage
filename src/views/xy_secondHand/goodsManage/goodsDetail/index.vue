@@ -69,6 +69,7 @@
             v-model="catalog1Value"
             :disabled="disableInput"
             placeholder="请选择"
+            @change="selectCatalog1(catalog1Value)"
           >
             <el-option
               v-for="item in catalog1"
@@ -254,23 +255,36 @@ export default {
         });
       });
     },
-
+    // 选了一级分类之后    加载二级分类
+    async selectCatalog1(val) {
+      const temp = {
+        pn: 1, //第几页
+        ps: 100, //每页大小
+        catalogId: "0"
+      };
+      temp.catalogId = val;
+      //设置二级下拉框的内容
+      const res = await findAllCatalog(temp);
+      this.catalog2 = res.queryResult.list;
+    },
     // 得到传过来的ID
     async getMsg() {
-      let goodsid = this.$route.query.id;
+      let goodsid = this.$route.query.id; //获取商品管理页面传过来的ID值
       this.goodid = goodsid;
       const temp = {
         goodsId: goodsid,
         pn: 1,
         ps: 1
       };
-      const res = await findGoods(temp);
+      const res = await findGoods(temp); //得到商品的详细信息
       //处理图片 以,分割
       let temp1 = res.queryResult.list[0];
       this.pics = temp1.goodsPic.split(",");
       this.item = res.queryResult.list[0];
       // 转化状态
-
+      this.item.goodsJudgeStatus = getGoodStateByCode(
+        this.item.goodsJudgeStatus
+      );
       // 下面的代码是格式化时间
       let oldtime = new Date(this.item.goodsReleaseTime).getTime();
       var date = new Date(oldtime);
@@ -408,7 +422,7 @@ export default {
       margin-right: 1%;
     }
     .content {
-      width: 94%;
+      width: 90%;
       margin: 0%;
     }
   }
