@@ -13,7 +13,7 @@ export function updateGoodsMsg(data1) {
     return request({
         url: '/mgr/judge_second_goods/goodsInfo',
         method: 'put',
-        params: data1
+        data: data1
     })
 }
 // 根据商品ID查询商品的两级分类的信息
@@ -66,29 +66,7 @@ export function judgeGoodsPass(data1) {
         }
     })
 }
-//通过用户的状态码得到用户的状态值
-export function getGoodStateByCode(value) {
-    let result = "";
-    if (value == "0") {
-        result = "未审核";
-    }
-    if (value == "1") {
-        result = "已通过";
-    }
-    if (value == "2") {
-        result = "未通过";
-    }
-    if (value == "3") {
-        result = "已支付";
-    }
-    if (value == "4") {
-        result = "已删除";
-    }
-    if (value == "5") {
-        result = "已下单";
-    }
-    return result;
-}
+
 export function addOrder(info) {
     return request({
         url: '/mgr/order',

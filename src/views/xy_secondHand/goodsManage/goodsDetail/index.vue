@@ -25,9 +25,8 @@
         >编辑商品信息</el-button
       >
       <el-button type="danger" plain class="content">审核不通过</el-button>
-      <el-button type="success" plain class="content" @click="acceptItem"
-        >审核通过</el-button
-      >
+      <el-button type="success" plain class="content" @click="acceptItem">审核通过</el-button>
+       <el-button type="primary" plain class="content">社交管理</el-button>
     </el-row>
     <div class="row-content">
       <div class="row">
@@ -132,14 +131,27 @@
         </div>
         <div class="col">
           <div class="col-title">商品状态:</div>
-          <el-input
+          <!-- <el-input
             class="col-content"
             placeholder="请输入内容"
             v-model="item.goodsJudgeStatus"
             clearable
             :disabled="disableInput"
           >
-          </el-input>
+          </el-input> -->
+          <el-select
+            v-model="goodsStatus"
+            :disabled="disableInput"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in goodsJudgeStatus"
+              :key="item.code"
+              :label="item.name"
+              :value="item.code"
+            >
+            </el-option>
+          </el-select>
         </div>
       </div>
       <div class="row">
@@ -195,11 +207,13 @@ import {
   findAllCatalog,
   findGoodsCatalog
 } from "@/api/xy_secondhand";
-import { getGoodStateByCode } from "@/api/xy_secondhandUtils";
+import { getGoodStateByCode, getGoodStatus } from "@/api/xy_secondhandUtils";
 export default {
   name: "goodsDetail",
   data() {
     return {
+      goodsJudgeStatus: null, //商品所有状态
+      goodsStatus: "", //商品状态码
       onload: false, //加载完之后再渲染页面
       disableInput: true, //禁用input
       item: null, //存的数据
@@ -218,9 +232,14 @@ export default {
   methods: {
     // 在这个方法中执行,页面初始化的方法
     initPage() {
+      this.getGoodsStatus(); //得到商品所有的状态值
       this.getMsg(); //得到商品详情信息
       this.getCatalog(); //得到商品两级分类信息
       this.onload = true;
+    },
+    //得到商品所有的状态值
+    getGoodsStatus() {
+      this.goodsJudgeStatus = getGoodStatus();
     },
     //加载商品的一级分类ID和二级分类ID
     async getCatalog() {
@@ -285,6 +304,7 @@ export default {
       this.item.goodsJudgeStatus = getGoodStateByCode(
         this.item.goodsJudgeStatus
       );
+      this.goodsStatus = this.item.goodsJudgeStatus;
       // 下面的代码是格式化时间
       let oldtime = new Date(this.item.goodsReleaseTime).getTime();
       var date = new Date(oldtime);
@@ -330,7 +350,8 @@ export default {
       //设置上传更改的信息    item存在的是一二级分类的 名字 上传要上传成ID
       this.updateGoodsCache.catalog1 = this.catalog1Value;
       this.updateGoodsCache.catalog2 = this.catalog2Value;
-
+      //更改状态值   状态值展示的是值 上传的时候需要的是ID
+      this.updateGoodsCache.goodsJudgeStatus = this.goodsStatus;
       const res = await updateGoodsMsg(this.updateGoodsCache);
       // 得到编辑之后的信息
       this.getMsg();

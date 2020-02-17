@@ -21,3 +21,32 @@ export function getGoodStateByCode(value) {
     }
     return result;
 }
+
+// 获取商品状态信息
+export function getGoodStatus() {
+    return [{
+            code: "0",
+            name: '未审核'
+        },
+        {
+            code: "1",
+            name: '已通过'
+        },
+        {
+            code: "2",
+            name: '未通过'
+        },
+        {
+            code: "3",
+            name: '已支付'
+        },
+        {
+            code: "4",
+            name: '已删除'
+        },
+        {
+            code: "5",
+            name: '已下单'
+        }
+    ]
+}

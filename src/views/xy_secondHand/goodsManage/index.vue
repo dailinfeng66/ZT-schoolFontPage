@@ -49,6 +49,20 @@
         >
         </el-option>
       </el-select>
+      <!-- <div class="block"> -->
+      <span class="demonstration">时间段筛选:</span>
+      <el-date-picker
+        @change="changeTime(timeRange)"
+        v-model="timeRange"
+        type="datetimerange"
+        :picker-options="pickerOptions"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        align="right"
+      >
+      </el-date-picker>
+      <!-- </div> -->
     </div>
 
     <!-- 以下是表格内容 -->
@@ -249,7 +263,40 @@ export default {
   },
   data() {
     return {
-      dataFlag: false,
+      //时间段选择   -> 快捷选项的配置
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近一个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "最近三个月",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      },
+      timeRange: "", //时间段的选择数据
+      dataFlag: false, //加载数据的flag
       catalogValue: "", //分类选项的 所选值de id
       catalogValue2: "", //二级分类选项的值 的id
       catalog1: [], //一级分类选项
@@ -338,6 +385,10 @@ export default {
     });
   },
   methods: {
+    // 更改时间操作
+    changeTime(val) {
+      
+    },
     // 根据用户ID查找商品
     async getM() {
       // let conditions = {
