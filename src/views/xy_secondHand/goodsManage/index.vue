@@ -385,23 +385,22 @@ export default {
           value.goodsJudgeStatus = "未审核";
         }
         if (value.goodsJudgeStatus == "1") {
-          value.goodsJudgeStatus == "已通过";
+          value.goodsJudgeStatus = "已通过";
         }
         if (value.goodsJudgeStatus == "2") {
-          value.goodsJudgeStatus == "未通过";
+          value.goodsJudgeStatus = "未通过";
         }
         if (value.goodsJudgeStatus == "3") {
-          value.goodsJudgeStatus == "已支付";
+          value.goodsJudgeStatus = "已支付";
         }
         if (value.goodsJudgeStatus == "4") {
-          value.goodsJudgeStatus == "已删除";
+          value.goodsJudgeStatus = "已删除";
         }
         if (value.goodsJudgeStatus == "5") {
-          value.goodsJudgeStatus == "已下单";
+          value.goodsJudgeStatus = "已下单";
         }
         let temp = value.goodsPic.split(",");
         value.goodsPic = temp[0];
-        
       });
 
       this.list = temp;

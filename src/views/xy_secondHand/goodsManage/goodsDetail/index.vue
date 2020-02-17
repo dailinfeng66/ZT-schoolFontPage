@@ -1,6 +1,6 @@
 <template>
   <!--  v-if="reload" -->
-  <div class="item">
+  <div class="item" v-if="onload">
     <el-row class="enable-edit">
       <el-button type="primary" plain class="content" @click="quit"
         >退出详情页</el-button
@@ -13,7 +13,12 @@
         @click="cacleEdit"
         >取消</el-button
       >
-      <el-button type="primary" plain class="content" v-show="showEditButton" @click="saveGoodMsg"
+      <el-button
+        type="primary"
+        plain
+        class="content"
+        v-show="showEditButton"
+        @click="saveGoodMsg"
         >确定编辑</el-button
       >
       <el-button type="primary" plain class="content" @click="editItem"
@@ -29,7 +34,7 @@
         <div class="col">
           <div class="col-title">商品ID:</div>
           <el-input
-            disabled="true"
+            disabled
             placeholder="请输入内容"
             v-model="item.goodsId"
             clearable
@@ -39,7 +44,7 @@
         <div class="col">
           <div class="col-title">用户ID:</div>
           <el-input
-            disabled="true"
+            disabled
             placeholder="请输入内容"
             v-model="item.userId"
             clearable
@@ -52,7 +57,7 @@
             placeholder="请输入内容"
             v-model="item.goodsReleaseTime"
             clearable
-            disabled="true"
+            disabled
           >
           </el-input>
         </div>
@@ -60,23 +65,35 @@
       <div class="row">
         <div class="col">
           <div class="col-title">一级分类:</div>
-          <el-input
+          <el-select
+            v-model="catalog1Value"
             :disabled="disableInput"
-            placeholder="请输入内容"
-            v-model="item.catalog1"
-            clearable
+            placeholder="请选择"
           >
-          </el-input>
+            <el-option
+              v-for="item in catalog1"
+              :key="item.catalogId"
+              :label="item.name"
+              :value="item.catalogId"
+            >
+            </el-option>
+          </el-select>
         </div>
         <div class="col">
           <div class="col-title">二级分类:</div>
-          <el-input
+          <el-select
+            v-model="catalog2Value"
             :disabled="disableInput"
-            placeholder="请输入内容"
-            v-model="item.catalog2"
-            clearable
+            placeholder="请选择"
           >
-          </el-input>
+            <el-option
+              v-for="item in catalog2"
+              :key="item.catalogId"
+              :label="item.name"
+              :value="item.catalogId"
+            >
+            </el-option>
+          </el-select>
         </div>
         <div class="col">
           <div class="col-title">商品价格:</div>
@@ -131,7 +148,7 @@
             placeholder="请输入内容"
             v-model="item.goodsBrose"
             clearable
-            :disabled="disableInput"
+            disabled
           >
           </el-input>
         </div>
@@ -170,21 +187,74 @@
 </template>
 
 <script>
-import { findGoods, judgeGoodsPass } from "@/api/xy_secondhand";
+import {
+  findGoods,
+  judgeGoodsPass,
+  updateGoodsMsg,
+  findAllCatalog,
+  findGoodsCatalog
+} from "@/api/xy_secondhand";
+import { getGoodStateByCode } from "@/api/xy_secondhandUtils";
 export default {
   name: "goodsDetail",
   data() {
     return {
-      disableInput: "true", //禁用input
+      onload: false, //加载完之后再渲染页面
+      disableInput: true, //禁用input
       item: null, //存的数据
       pics: [], //物品图片
       goodid: null, //商品的id
       dialogImageUrl: "", //上传图片用
       dialogVisible: false, //上传图片用
-      showEditButton: false //是否显示 确认编辑和取消两个按钮
+      showEditButton: false, //是否显示 确认编辑和取消两个按钮
+      catalog1: [], //一级分类列表
+      catalog2: [], //二级分类列表
+      catalog1Value: "", //下拉列表选项 所选值
+      catalog2Value: "", //二级分类下拉列表所选值
+      updateGoodsCache: null //更新商品信息的时候 用来提交的对象
     };
   },
   methods: {
+    // 在这个方法中执行,页面初始化的方法
+    initPage() {
+      this.getMsg(); //得到商品详情信息
+      this.getCatalog(); //得到商品两级分类信息
+      this.onload = true;
+    },
+    //加载商品的一级分类ID和二级分类ID
+    async getCatalog() {
+      // 获取一级分类
+      const temp = {
+        pn: 1, //第几页
+        ps: 100, //每页大小
+        catalogId: "0"
+      };
+      //得到所有一级分类
+      findAllCatalog(temp).then(res => {
+        this.catalog1 = res.queryResult.list;
+        let condition = {
+          goodsId: this.goodid
+        };
+        //根据商品id得到一级分类和二级分类
+        findGoodsCatalog(condition).then(res1 => {
+          // 设置一级分类默认选项
+          this.catalog1Value = res1.queryResult.list[0].shCatalog1.catalogId;
+          // 得到所有一级分类和目前所选一级分类下的二级分类
+          const temp1 = {
+            pn: 1, //第几页
+            ps: 100, //每页大小
+            catalogId: res1.queryResult.list[0].shCatalog1.catalogId
+          };
+          //获取所有的二级分类
+          findAllCatalog(temp1).then(res2 => {
+            this.catalog2 = res2.queryResult.list;
+            // 设置二级分类默认选项
+            this.catalog2Value = res1.queryResult.list[0].shCatalog2.catalogId;
+          });
+        });
+      });
+    },
+
     // 得到传过来的ID
     async getMsg() {
       let goodsid = this.$route.query.id;
@@ -195,9 +265,12 @@ export default {
         ps: 1
       };
       const res = await findGoods(temp);
+      //处理图片 以,分割
       let temp1 = res.queryResult.list[0];
       this.pics = temp1.goodsPic.split(",");
       this.item = res.queryResult.list[0];
+      // 转化状态
+
       // 下面的代码是格式化时间
       let oldtime = new Date(this.item.goodsReleaseTime).getTime();
       var date = new Date(oldtime);
@@ -238,8 +311,32 @@ export default {
       this.$router.push({ path: "goodsManage" });
     },
     // 用户点击了 确定编辑
-    saveGoodMsg(){
-      
+    async saveGoodMsg() {
+      this.updateGoodsCache = this.item;
+      //设置上传更改的信息    item存在的是一二级分类的 名字 上传要上传成ID
+      this.updateGoodsCache.catalog1 = this.catalog1Value;
+      this.updateGoodsCache.catalog2 = this.catalog2Value;
+
+      const res = await updateGoodsMsg(this.updateGoodsCache);
+      // 得到编辑之后的信息
+      this.getMsg();
+      this.disableInput = true; //使得input框不能编辑
+      this.showEditButton = false; // 使得编辑的按钮消失
+      if (res.code == 10000 || res.code == "10000") {
+        this.$notify({
+          title: "成功",
+          message: "修改成功",
+          type: "success",
+          duration: 2000
+        });
+      } else {
+        this.$notify({
+          title: "失败",
+          message: "修改失败",
+          type: "error",
+          duration: 2000
+        });
+      }
     },
     // 用户点了通过审核
     async acceptItem() {
@@ -270,7 +367,7 @@ export default {
     }
   },
   created() {
-    this.getMsg();
+    this.initPage();
   }
 };
 </script>
