@@ -43,15 +43,15 @@ const actions = {
     async login({
         commit
     }, userInfo) {
-        const res = await login(userInfo);
+        // const res = await login(userInfo);
         //跳过登录
-        // const res = {
-        //   success: true,
-        //   data: {
-        //     token: "123"
-        //   }
-        // }
-        //跳过登录
+        const res = {
+                success: true,
+                data: {
+                    token: "123"
+                }
+            }
+            //跳过登录
         console.log("登录接口请求 返回")
         console.log(res)
         console.log("登录接口请求 返回")

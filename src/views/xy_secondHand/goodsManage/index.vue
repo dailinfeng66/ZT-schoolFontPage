@@ -222,6 +222,7 @@
 
 <script>
 import { findAllCatalog, findGoods, judgeGoodsPass } from "@/api/xy_secondhand";
+import { getGoodStateByCode } from "@/api/xy_secondhandUtils";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -232,7 +233,6 @@ const calendarTypeOptions = [
     display_name: "China"
   }
 ];
-
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name;
@@ -241,7 +241,6 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 
 export default {
   name: "goodsManage",
-
   components: {
     Pagination
   },
@@ -295,7 +294,7 @@ export default {
           }
         ]
       },
-      timeRange: "", //时间段的选择数据
+      timeRange: null, //时间段的选择数据
       dataFlag: false, //加载数据的flag
       catalogValue: "", //分类选项的 所选值de id
       catalogValue2: "", //二级分类选项的值 的id
@@ -387,7 +386,18 @@ export default {
   methods: {
     // 更改时间操作
     changeTime(val) {
-      
+      console.log(this.timeRange);
+      let date1 = new Date(val[0]);
+      let date2 = new Date(val[1]);
+      let conditions = {
+        pn: 1,
+        ps: 10,
+        endTime: date2,
+        startTime: date1,
+        catalog1: this.catalogValue,
+        catalog2: this.catalogValue2
+      };
+      this.shouGoodsMsg(conditions);
     },
     // 根据用户ID查找商品
     async getM() {
@@ -432,24 +442,7 @@ export default {
         // 转化时间
         value.goodsReleaseTime = new Date(value.goodsReleaseTime);
         // 转化状态
-        if (value.goodsJudgeStatus == "0") {
-          value.goodsJudgeStatus = "未审核";
-        }
-        if (value.goodsJudgeStatus == "1") {
-          value.goodsJudgeStatus = "已通过";
-        }
-        if (value.goodsJudgeStatus == "2") {
-          value.goodsJudgeStatus = "未通过";
-        }
-        if (value.goodsJudgeStatus == "3") {
-          value.goodsJudgeStatus = "已支付";
-        }
-        if (value.goodsJudgeStatus == "4") {
-          value.goodsJudgeStatus = "已删除";
-        }
-        if (value.goodsJudgeStatus == "5") {
-          value.goodsJudgeStatus = "已下单";
-        }
+        value.goodsJudgeStatus = getGoodStateByCode(value.goodsJudgeStatus);
         let temp = value.goodsPic.split(",");
         value.goodsPic = temp[0];
       });
@@ -462,10 +455,14 @@ export default {
     async selectCatalog(val) {
       this.listLoading = true;
       // 查找这个一级分类下的所有商品
+      let date1 = new Date(this.timeRange[0]); //添加时间条件
+      let date2 = new Date(this.timeRange[1]);
       let conditions = {
         pn: 1,
         ps: 10,
-        catalog1: ""
+        catalog1: "",
+        endTime: date2,
+        startTime: date1
       };
       conditions.catalog1 = val;
       //如果选的不是  全部  这个选项 就加载相应一级分类下的商品
@@ -489,10 +486,14 @@ export default {
       this.list = [];
       this.listLoading = true;
       //如果 的不是全部选项 就加载相应的
+      let date1 = new Date(this.timeRange[0]);
+      let date2 = new Date(this.timeRange[1]);
       let conditions = {
         pn: 1,
         ps: 10,
-        catalog2: ""
+        catalog2: "",
+        endTime: date2,
+        startTime: date1
       };
       conditions.catalog2 = val;
       this.shouGoodsMsg(conditions);
