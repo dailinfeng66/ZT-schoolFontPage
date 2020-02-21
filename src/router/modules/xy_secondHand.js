@@ -7,7 +7,8 @@ const xy_secondHand = {
     alwaysShow: true,
     meta: {
         title: '二手平台管理', //这个地方就是写 模块名字
-        icon: 'tree-table'
+        icon: 'tree-table',
+        role: ['001']
     },
     children: [{
             path: 'platformStatistics',

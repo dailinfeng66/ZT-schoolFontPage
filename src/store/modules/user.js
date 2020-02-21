@@ -6,6 +6,7 @@ import {
 import {
     getToken,
     setToken,
+    setSchoolId,
     removeToken
 } from '@/utils/auth'
 import router, {
@@ -17,10 +18,15 @@ const state = {
     name: '',
     avatar: '',
     introduction: '',
-    roles: []
+    roles: [],
+    schoolId: '' //学校ID
 }
 
 const mutations = {
+    // 设置学校ID
+    SET_SCHOOL_ID: (state, schoolId) => {
+        state.schoolId = schoolId
+    },
     SET_TOKEN: (state, token) => {
         state.token = token
     },
@@ -52,30 +58,19 @@ const actions = {
         //         }
         //     }
         //跳过登录
-        console.log("登录接口请求 返回")
-        console.log(res)
-        console.log("登录接口请求 返回")
-            // const { username, password } = userInfo
+        // console.log("登录接口请求 返回")
+        // console.log(res)
+        // console.log("登录接口请求 返回")
+        // const { username, password } = userInfo
         const token = "Bearer " + res.data.token;
+        const role = res.data.grade;
+        const school = res.data.schoolId;
+        commit('SET_ROLES', role) //设置角色
         commit('SET_TOKEN', token)
+        commit('SET_SCHOOL_ID', school) //设置学校ID
+        setSchoolId(school)
         setToken(token)
         return res
-            // const resu = new Promise((resolve, reject) => {
-            //   login(userInfo).then(response => {
-            //     // console.log(response.data)
-            //     if (response.data.message == "登录成功！") {
-            //       commit('SET_TOKEN', response.data.token)
-            //       setToken(response.token)
-            //       resolve()
-            //       return response;
-            //     } else {
-            //       return response;
-            //     }
-
-        //   }).catch(error => {
-        //     reject(error)
-        //   })
-        // })
     },
 
     // get user info
@@ -92,14 +87,13 @@ const actions = {
                 if (!data) {
                     reject('Verification failed, please Login again.')
                 }
-
                 const {
                     roles,
                     name,
                     avatar,
-                    introduction
+                    introduction,
+                    schoolId
                 } = data
-
                 // roles must be a non-empty array
                 if (!roles || roles.length <= 0) {
                     reject('getInfo: roles must be a non-null array!')
@@ -109,6 +103,7 @@ const actions = {
                 commit('SET_NAME', name)
                 commit('SET_AVATAR', avatar)
                 commit('SET_INTRODUCTION', introduction)
+                commit('SET_SCHOOL_ID', schoolId)
                 resolve(data)
             }).catch(error => {
                 reject(error)
