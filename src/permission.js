@@ -15,7 +15,6 @@ NProgress.configure({
     }) // NProgress Configuration
 
 const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
-
 router.beforeEach(async(to, from, next) => {
     // start progress bar
     NProgress.start() //加载进度条
@@ -32,11 +31,11 @@ router.beforeEach(async(to, from, next) => {
             // if is logged in, redirect to the home page
             NProgress.done()
         } else {
-            next()
             const hasRoles = store.getters.roles && store.getters.roles.length > 0
             if (hasRoles) { //有权限
                 console.log("有权限 有角色--->" + store.getters.roles)
                 const roles = store.getters.roles;
+                sessionStorage.setItem("roles", roles); //页面一刷新VUEX里面存的东西就被刷新了 所以我把角色存到sessionStorage里面
                 console.log(roles)
                 const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
                 router.addRoutes(accessRoutes) //添加路由
@@ -44,16 +43,16 @@ router.beforeEach(async(to, from, next) => {
             } else { //没有权限
                 console.log("没有权限 没有角色")
                 try {
-                    const roles = store.getters.roles;
+                    const roles = sessionStorage.getItem("roles"); //如果没有权限就在sessionStorage里面去取 
                     const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
                     router.addRoutes(accessRoutes)
                     next()
                 } catch (error) {
-                    // await store.dispatch('user/resetToken')
-                    // Message.error(error || 'Has Error')
-                    // next(`/login?redirect=${to.path}`)
-                    //     // next()
-                    // NProgress.done()
+                    await store.dispatch('user/resetToken')
+                    Message.error(error || 'Has Error')
+                    next(`/login?redirect=${to.path}`)
+                        // next()
+                    NProgress.done()
                 }
             }
         }
