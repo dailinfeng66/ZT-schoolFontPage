@@ -4,7 +4,7 @@
       <!-- 标题 input框 -->
       <el-input
         v-model="query"
-        placeholder="用户手机号"
+        placeholder="商品标题"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="getM"

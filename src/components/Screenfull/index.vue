@@ -1,8 +1,22 @@
 <template>
-  <div>
-    <el-select v-model="value" disabled style="width: 200px;">
-      <el-option :label="item.label" :value="item.value"> </el-option>
+  <div v-if="canShow">
+    <el-select v-model="value" :disabled="canChoose" style="width: 200px;">
+      <!-- <el-option :label="item.label" :value="item.value"> </el-option> -->
+      <el-option
+        v-for="item in options"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      >
+      </el-option>
     </el-select>
+    <el-input
+      v-model="rolesName"
+      :placeholder="rolesName"
+      disabled
+      style="width: 100px;"
+    ></el-input>
+    <!-- <el-tag type="success" style="width: 100px;">{{rolesName}}</el-tag> -->
     <svg-icon
       :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
       @click="click"
@@ -19,12 +33,17 @@ export default {
     return {
       isFullscreen: false,
       value: null,
-      item: null
+      options: null,
+      canChoose: false,
+      item: null,
+      canShow: false,
+      rolesName: "" //用户角色
     };
   },
   mounted() {
     this.init();
   },
+  // mounted() {},
   beforeDestroy() {
     this.destroy();
   },
@@ -42,13 +61,71 @@ export default {
     change() {
       this.isFullscreen = screenfull.isFullscreen;
     },
+    setRoleName(val) {
+      this.rolesName = val;
+      // this.$set(this.rolesName, val);
+    },
     init() {
-     let schoolId = getSchoolId()
+      this.options = [
+        //设置学校的下拉框
+        {
+          label: "全部学校",
+          value: "00000"
+        },
+        {
+          label: "成都信息工程大学",
+          value: "00001"
+        },
+        {
+          label: "西南民族大学",
+          value: "00002"
+        }
+      ];
+      let schoolId = getSchoolId();
+      let schoolName = null;
+      switch (schoolId) {
+        case "00000":
+          schoolName = "全部学校";
+          break;
+        case "00001":
+          schoolName = "成都信息工程大学";
+          break;
+        case "00002":
+          schoolName = "西南民族大学";
+          break;
+      }
       this.item = {
-        label: schoolId,
+        label: schoolName,
         value: schoolId
       };
-      this.value = schoolId;
+      this.value = schoolId; //设置学校
+
+      let roles = sessionStorage.getItem("roles");
+      //判断是否能够选择学校和添加角色名
+      switch (roles) {
+        case "000":
+          this.canChoose = true;
+          this.setRoleName("超级管理员");
+          break;
+        case "001":
+          this.canChoose = true;
+          this.setRoleName("总财务会计");
+          break;
+        case "002":
+          this.canChoose = true;
+          this.setRoleName("总审核员");
+          break;
+        case "003":
+          this.setRoleName("校区负责人");
+          break;
+        case "004":
+          this.setRoleName("校区财务会计");
+          break;
+        case "005":
+          this.setRoleName("校区审核员");
+          break;
+      }
+      this.canShow = true;
       if (screenfull.enabled) {
         screenfull.on("change", this.change);
       }

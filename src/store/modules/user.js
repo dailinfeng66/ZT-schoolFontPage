@@ -56,7 +56,7 @@ const actions = {
         //         data: {
         //             token: "123"
         //         }
-        //     }
+        //     }                              
         //跳过登录
         // console.log("登录接口请求 返回")
         // console.log(res)
@@ -65,9 +65,9 @@ const actions = {
         const token = "Bearer " + res.data.token;
         const role = res.data.grade;
         const school = res.data.schoolId;
-        commit('SET_ROLES', role) //设置角色
-        commit('SET_TOKEN', token)
-        commit('SET_SCHOOL_ID', school) //设置学校ID
+        commit('SET_ROLES', role) //设置角色   ->存在vuex  -> 出了一个问题  刷新页面 角色就会消失  --> 存到sessionStore里面去的
+        commit('SET_TOKEN', token) //  -> 写在 Cookie里面的
+        commit('SET_SCHOOL_ID', school) //设置学校ID   -> 写在Cookie里面的
         setSchoolId(school)
         setToken(token)
         return res
@@ -123,9 +123,6 @@ const actions = {
                 commit('SET_ROLES', [])
                 removeToken()
                 resetRouter()
-
-                // reset visited views and cached views
-                // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
                 dispatch('tagsView/delAllViews', null, {
                     root: true
                 })

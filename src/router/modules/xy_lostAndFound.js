@@ -9,7 +9,6 @@ const xy_lostAndFound = {
     meta: {
         title: '失物招领管理', //这个地方就是写 模块名字
         icon: 'user',
-        role: ['000', '001']
     },
     children: [{
             path: 'xy_lostAndFoundStatis',
@@ -18,6 +17,7 @@ const xy_lostAndFound = {
             name: 'xy_lostAndFoundStatis',
             meta: {
                 title: '失物招领统计',
+                roles: ["001", "000"]
             }
         },
         {
@@ -26,7 +26,8 @@ const xy_lostAndFound = {
                 import ('@/views/xy_lostAndFound/xy_lostAndFound'),
             name: 'xy_lostAndFound',
             meta: {
-                title: '失物招领信息管理'
+                title: '失物招领信息管理',
+                roles: ["001", "000"]
             }
         },
         {
@@ -37,6 +38,7 @@ const xy_lostAndFound = {
             meta: {
                 title: '失物招领编辑',
                 noCache: true,
+                roles: ["001", "000"],
                 activeMenu: '@/views/xy_lostAndFound/xy_lostAndFound'
             },
             hidden: true

@@ -36,7 +36,6 @@ router.beforeEach(async(to, from, next) => {
                 console.log("有权限 有角色--->" + store.getters.roles)
                 const roles = store.getters.roles;
                 sessionStorage.setItem("roles", roles); //页面一刷新VUEX里面存的东西就被刷新了 所以我把角色存到sessionStorage里面
-                console.log(roles)
                 const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
                 router.addRoutes(accessRoutes) //添加路由
                 next()
@@ -44,6 +43,7 @@ router.beforeEach(async(to, from, next) => {
                 console.log("没有权限 没有角色")
                 try {
                     const roles = sessionStorage.getItem("roles"); //如果没有权限就在sessionStorage里面去取 
+                    console.log("从SessionStorage里面获取了角色" + roles)
                     const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
                     router.addRoutes(accessRoutes)
                     next()
