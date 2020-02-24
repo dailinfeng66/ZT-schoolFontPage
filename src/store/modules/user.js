@@ -50,6 +50,7 @@ const actions = {
         commit
     }, userInfo) {
         const res = await login(userInfo);
+        sessionStorage.setItem("loginName", userInfo.loginName);
         //跳过登录
         // const res = {
         //         success: true,

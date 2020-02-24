@@ -30,7 +30,7 @@
       >
         <div class="avatar-wrapper">
           <!-- <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" /> -->
-          <div>username</div>
+          <div>{{ username }}</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -59,6 +59,11 @@ import LangSelect from "@/components/LangSelect";
 import Search from "@/components/HeaderSearch";
 
 export default {
+  data() {
+    return {
+      username: null
+    };
+  },
   components: {
     Breadcrumb,
     Hamburger,
@@ -70,6 +75,9 @@ export default {
   },
   computed: {
     ...mapGetters(["sidebar", "avatar", "device"])
+  },
+  created() {
+    this.username = sessionStorage.getItem("loginName");
   },
   methods: {
     toggleSideBar() {

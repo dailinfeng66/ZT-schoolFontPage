@@ -1,6 +1,11 @@
 <template>
-  <div v-if="canShow">
-    <el-select v-model="value" :disabled="canChoose" style="width: 200px;">
+  <div>
+    <el-select
+      v-if="canShow"
+      v-model="value"
+      :disabled="canChoose"
+      style="width: 200px;"
+    >
       <!-- <el-option :label="item.label" :value="item.value"> </el-option> -->
       <el-option
         v-for="item in options"
@@ -34,15 +39,34 @@ export default {
       isFullscreen: false,
       value: null,
       options: null,
-      canChoose: false,
+      canChoose: true,
       item: null,
       canShow: false,
       rolesName: "" //用户角色
     };
   },
-  mounted() {
+  created() {
     this.init();
   },
+  // mounted() {
+  //   let roles = sessionStorage.getItem("roles");
+  //   //判断是否能够选择学校和添加角色名
+  //   switch (roles) {
+  //     case "000":
+  //       this.canChoose = true;
+  //       break;
+  //     case "001":
+  //       this.canChoose = true;
+  //       break;
+  //     case "002":
+  //       this.canChoose = true;
+  //       break;
+  //     default:
+  //       this.canChoose = false;
+  //   }
+  //   this.canShow = true;
+  //   this.$forceUpdate()
+  // },
   // mounted() {},
   beforeDestroy() {
     this.destroy();
@@ -126,6 +150,7 @@ export default {
           break;
       }
       this.canShow = true;
+      this.$forceUpdate();
       if (screenfull.enabled) {
         screenfull.on("change", this.change);
       }
