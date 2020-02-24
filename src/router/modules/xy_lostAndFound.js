@@ -8,7 +8,7 @@ const xy_lostAndFound = {
     // constantRoutes: true,
     meta: {
         title: '失物招领管理', //这个地方就是写 模块名字
-        icon: 'user',
+        icon: 'component',
     },
     children: [{
             path: 'xy_lostAndFoundStatis',
