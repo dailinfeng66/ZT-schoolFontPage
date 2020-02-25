@@ -41,6 +41,7 @@
         </el-option>
       </el-select>
       <el-select
+        v-if="adminRoles == '000' ? true : false"
         @change="findBySchool(selectSchool)"
         v-model="selectSchool"
         placeholder="用户学校"
@@ -163,7 +164,7 @@
       :limit.sync="listQuery.ps"
       @pagination="selectCatalog(catalogValue)"
     />
-
+    <!-- 更改管理员 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -191,7 +192,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户学校">
+        <el-form-item
+          label="用户学校"
+          v-if="adminRoles == '000' ? true : false"
+        >
           <el-select v-model="adminSchool" placeholder="请选择">
             <el-option
               v-for="item in shcools"
@@ -243,7 +247,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="用户学校">
+        <el-form-item
+          label="用户学校"
+          v-if="adminRoles == '000' ? true : false"
+        >
           <el-select v-model="createAdminTemp.schoolId" placeholder="请选择">
             <el-option
               v-for="item in shcools"
@@ -276,9 +283,11 @@ import {
   addAdmins
 } from "@/api/xy_admin";
 import { alertMsg } from "@/api/utils/remind";
+import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
+import { getRoles } from "../../../api/role";
 
 const calendarTypeOptions = [
   {
@@ -366,6 +375,7 @@ export default {
         }
       ], //学校 ->code 和名字
       adminGrade: "", //角色选中
+      adminRoles: "null",
       adminSelectGrade: null, //角色列表
       timeRange: null, //时间段的选择数据
       dataFlag: false, //加载数据的flag
@@ -446,6 +456,7 @@ export default {
       ps: 10
     }); //加载用户信息
     this.getAllGrades(); //加载管理员信息
+    this.adminRoles = sessionStorage.getItem("roles");
   },
   methods: {
     // 根据用户学校筛选
@@ -516,7 +527,7 @@ export default {
         loginName: "",
         loginPassword: "",
         grade: "",
-        schoolId: ""
+        schoolId: getSchoolId()
       };
     },
     //更新管理员
