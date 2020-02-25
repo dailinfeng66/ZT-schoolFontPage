@@ -130,13 +130,16 @@
       <el-table-column
         label="操作"
         align="center"
-        width="200px"
+        width="300px"
         class-name="small-padding fixed-width"
       >
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
           <el-button type="primary" size="small" @click="edit(row)"
             >编辑</el-button
+          >
+          <el-button type="primary" size="small" @click="resetPass(row)"
+            >重置密码</el-button
           >
           <el-button
             v-if="row.state == '正常'"
@@ -164,6 +167,34 @@
       :limit.sync="listQuery.ps"
       @pagination="selectCatalog(catalogValue)"
     />
+    <el-dialog title="重置密码" :visible.sync="resetPassDialog">
+      <el-form
+        ref="resetPassForm"
+        :rules="rules"
+        :model="resetPassTemp"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item label="用户ID">
+          <el-input disabled v-model="resetPassTemp.id" />
+        </el-form-item>
+        <el-form-item label="用户名">
+          <el-input disabled v-model="resetPassTemp.loginName" />
+        </el-form-item>
+        <el-form-item label="用户密码">
+          <el-input show-password v-model="resetPassTemp.loginPassword" />
+        </el-form-item>
+        <el-form-item label="确认密码">
+          <el-input show-password v-model="confirmPass" />
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="resetPassDialog = false">取消</el-button>
+        <el-button type="primary" @click="resetAdminPass()">确定</el-button>
+      </div>
+    </el-dialog>
     <!-- 更改管理员 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
@@ -220,6 +251,7 @@
         >
       </div>
     </el-dialog>
+
     <el-dialog title="添加管理员" :visible.sync="createAdminVisible">
       <el-form
         ref="dataCreateForm"
@@ -280,7 +312,8 @@ import {
   getSchoolIdByName,
   getGrades,
   updateAdmin,
-  addAdmins
+  addAdmins,
+  resetAdminPass
 } from "@/api/xy_admin";
 import { alertMsg } from "@/api/utils/remind";
 import { getSchoolId } from "@/utils/auth";
@@ -324,9 +357,16 @@ export default {
   },
   data() {
     return {
+      resetPassTemp: {
+        id: "",
+        loginName: "",
+        loginPassword: ""
+      }, //重置密码中间变量
+      resetPassDialog: false, //重置密码弹窗
       userName: "", //用户名
       selectGrade: "", //用户角色
       selectSchool: "", //用户学校
+      confirmPass: "", //确认密码
       //时间段选择   -> 快捷选项的配置
       pickerOptions: {
         shortcuts: [
@@ -459,6 +499,20 @@ export default {
     this.adminRoles = sessionStorage.getItem("roles");
   },
   methods: {
+    //重置密码
+    async resetAdminPass() {
+      if (this.resetPassTemp.loginPassword != this.confirmPass) {
+        this.$message.error("两次输入的密码不一致");
+      } else {
+        let condition = {
+          adminId: this.resetPassTemp.id,
+          pass: this.resetPassTemp.loginPassword
+        };
+        const res = await resetAdminPass(condition);
+        alertMsg(res, "修改密码", this);
+        this.resetPassDialog = false;
+      }
+    },
     // 根据用户学校筛选
     findBySchool(val) {
       let temp = val;
@@ -487,6 +541,15 @@ export default {
         ps: 10
       };
       this.showAdmins(condition);
+    },
+    //点击重置密码  弹出弹窗
+    resetPass(row) {
+      this.resetPassTemp = Object.assign({}, row); // copy obj
+      this.resetPassDialog = true;
+      this.confirmPass = '';
+      this.$nextTick(() => {
+        this.$refs["resetPassForm"].clearValidate();
+      });
     },
     //根据用户名查找管理员
     getM() {

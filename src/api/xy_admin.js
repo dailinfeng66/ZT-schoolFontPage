@@ -49,6 +49,15 @@ export function updateAdmin(data1) {
     })
 }
 
+// 重置密码
+export function resetAdminPass(data1) {
+    return request({
+        url: baseUrl + '/password',
+        method: 'put',
+        data: data1
+    })
+}
+
 
 
 
