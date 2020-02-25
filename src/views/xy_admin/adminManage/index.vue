@@ -3,7 +3,7 @@
     <div class="filter-container">
       <!-- 标题 input框 -->
       <el-input
-        v-model="query"
+        v-model="userName"
         placeholder="用户名"
         style="width: 200px;"
         class="filter-item"
@@ -18,6 +18,41 @@
         @click="getM"
         >搜索</el-button
       >
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="primary"
+        icon="el-icon-edit"
+        @click="handleCreate"
+        >添加</el-button
+      >
+      <el-select
+        @change="findByGrade(selectGrade)"
+        v-model="selectGrade"
+        placeholder="用户角色"
+      >
+        <el-option key="" label="全部角色" value=""> </el-option>
+        <el-option
+          v-for="item in adminSelectGrade"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <el-select
+        @change="findBySchool(selectSchool)"
+        v-model="selectSchool"
+        placeholder="用户学校"
+      >
+        <el-option
+          v-for="item in shcools"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
       <!-- <span class="demonstration">时间段筛选:</span>
       <el-date-picker
         @change="changeTime(timeRange)"
@@ -45,11 +80,11 @@
       @sort-change="sortChange"
     >
       <!-- 一列的开始 -->
-      <el-table-column label="管理员ID" prop="id" align="center">
+      <!-- <el-table-column label="管理员ID" prop="id" align="center">
         <template slot-scope="{ row }">
           <span>{{ row.id }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <!-- 一列的结束 -->
       <el-table-column label="用户名" width align="center">
         <template slot-scope="{ row }">
@@ -181,32 +216,49 @@
         >
       </div>
     </el-dialog>
-
-    <el-dialog
-      :visible.sync="dialogVisible"
-      :title="dialogType === 'edit' ? 'Edit Role' : 'New Role'"
-    >
-      <el-form :model="role" label-width="80px" label-position="left">
-        <el-form-item label="Menus">
-          <el-tree
-            ref="tree"
-            :check-strictly="checkStrictly"
-            :data="routesData"
-            :props="defaultProps"
-            show-checkbox
-            node-key="id"
-            class="permission-tree"
-          />
+    <el-dialog title="添加管理员" :visible.sync="createAdminVisible">
+      <el-form
+        ref="dataCreateForm"
+        :rules="rules"
+        :model="createAdminTemp"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <!-- 第一个字段 -->
+        <el-form-item label="用户名">
+          <el-input v-model="createAdminTemp.loginName" />
+        </el-form-item>
+        <el-form-item label="用户密码">
+          <el-input show-password v-model="createAdminTemp.loginPassword" />
+        </el-form-item>
+        <el-form-item label="用户角色 ">
+          <el-select v-model="createAdminTemp.grade" placeholder="请选择">
+            <el-option
+              v-for="item in adminSelectGrade"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="用户学校">
+          <el-select v-model="createAdminTemp.schoolId" placeholder="请选择">
+            <el-option
+              v-for="item in shcools"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
-      <div style="text-align:right;">
-        <el-button type="danger" @click="dialogVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus === 'create' ? createData() : updateData()"
-          >确定</el-button
-        >
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="createAdminVisible = false">取消</el-button>
+        <el-button type="primary" @click="createData()">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -220,7 +272,8 @@ import {
   getSchoolNameById,
   getSchoolIdByName,
   getGrades,
-  updateAdmin
+  updateAdmin,
+  addAdmins
 } from "@/api/xy_admin";
 import { alertMsg } from "@/api/utils/remind";
 import waves from "@/directive/waves"; // waves directive
@@ -262,6 +315,9 @@ export default {
   },
   data() {
     return {
+      userName: "", //用户名
+      selectGrade: "", //用户角色
+      selectSchool: "", //用户学校
       //时间段选择   -> 快捷选项的配置
       pickerOptions: {
         shortcuts: [
@@ -310,11 +366,17 @@ export default {
         }
       ], //学校 ->code 和名字
       adminGrade: "", //角色选中
-      adminSelectGrade: [], //角色列表
+      adminSelectGrade: null, //角色列表
       timeRange: null, //时间段的选择数据
       dataFlag: false, //加载数据的flag
+      createAdminTemp: {
+        loginName: "",
+        loginPassword: "",
+        grade: "",
+        schoolId: ""
+      }, //添加用户的表单的中间变量
+      createAdminVisible: false, //是否显示添加用户的表单
       id: "",
-      query: "",
       routes: [],
       dialogVisible: false,
       dialogType: "new",
@@ -386,8 +448,77 @@ export default {
     this.getAllGrades(); //加载管理员信息
   },
   methods: {
-    //添加 管理员
-    createData() {},
+    // 根据用户学校筛选
+    findBySchool(val) {
+      let temp = val;
+      if (val == "00000") {
+        temp = "";
+      }
+      let conditions = {
+        grade: this.selectGrade,
+        pn: 1,
+        ps: 10,
+        schoolId: temp
+      };
+      this.showAdmins(conditions);
+    },
+    // 根据角色筛选
+    findByGrade(val) {
+      let temp = this.selectSchool;
+      if (temp == "00000") {
+        //点全部学校的时候应该是显示所有的学校而不是  "全部学校"
+        temp = "";
+      }
+      let condition = {
+        grade: val,
+        schoolId: temp,
+        pn: 1,
+        ps: 10
+      };
+      this.showAdmins(condition);
+    },
+    //根据用户名查找管理员
+    getM() {
+      let queryCondition = {
+        pn: 1,
+        ps: 10,
+        loginName: this.userName
+      };
+      this.showAdmins(queryCondition);
+    },
+    //点击添加管理员按钮
+    handleCreate() {
+      this.resetCreateTemp();
+      // this.dialogStatus = "create";
+      this.createAdminVisible = true;
+      this.$nextTick(() => {
+        this.$refs["dataCreateForm"].clearValidate();
+      });
+    },
+    // 添加管理员
+    async createData() {
+      this.createAdminVisible = false;
+      let _this = this;
+      this.$refs["dataCreateForm"].validate(async valid => {
+        if (valid) {
+          const res = await addAdmins(this.createAdminTemp);
+          alertMsg(res, "添加管理员", _this);
+          this.showAdmins({
+            pn: 1,
+            ps: 10
+          });
+        }
+      });
+    },
+    //重置temp
+    resetCreateTemp() {
+      this.createAdminTemp = {
+        loginName: "",
+        loginPassword: "",
+        grade: "",
+        schoolId: ""
+      };
+    },
     //更新管理员
     updateData() {
       this.dialogFormVisible = false;
@@ -401,7 +532,11 @@ export default {
             schoolId: this.adminSchool
           };
           const res = await updateAdmin(data);
-          alertMsg(res, "更新管理员",_this);
+          alertMsg(res, "更新管理员", _this);
+          this.showAdmins({
+            pn: 1,
+            ps: 10
+          });
         }
       });
     },
@@ -410,25 +545,37 @@ export default {
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = "update";
       this.adminSchool = getSchoolIdByName(row.schoolId); //把名字转化成ID   ->设置初始值
-      this.adminGrade = row.grade;
+      this.adminGrade = this.getGradeByRole(row.grade); //把角色值改为角色码
       this.dialogFormVisible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].clearValidate();
       });
     },
+    // 通过角色名得到角色码
+    getGradeByRole(val) {
+      let result = "null";
+      this.adminSelectGrade.map(item => {
+        if (val == item.label) {
+          result = item.value;
+        }
+      });
+      return result;
+    },
     // 加载角色信息
     async getAllGrades() {
       const res = await getGrades();
-      // this.adminSelectGrade = [];
+      this.adminSelectGrade = [];
       let result = [];
       res.queryResult.list.map(item => {
         let temp = {
-          label: item.role,
-          value: item.grade
+          value: item.grade,
+          label: item.role
         };
-        result.push(temp);
+        this.adminSelectGrade.push(temp);
+        // result.push(temp);
       });
-      this.adminSelectGrade = result;
+      // this.adminSelectGrade = result;
+      console.log(result);
     },
     // 展示管理员信息
     async showAdmins(data) {
@@ -472,7 +619,6 @@ export default {
         ps: 10
       });
     },
-
     /**
      * 下面的方法不知道有什么用 但是就是不能动
      */

@@ -8,6 +8,14 @@ export function findAdmins(data1) {
         data: data1
     })
 }
+// 添加管理员
+export function addAdmins(data1) {
+    return request({
+        url: baseUrl,
+        method: 'post',
+        data: data1
+    })
+}
 // 启用用户
 export function ableAdminByID(data1) {
     return request({

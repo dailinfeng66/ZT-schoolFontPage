@@ -2,7 +2,12 @@
   <div class="app-container">
     <div class="filter-container">
       <!-- 标题 input框 -->
-      <el-input v-model="listQuery.ID" placeholder="ID" style="width: 200px;" class="filter-item" />
+      <el-input
+        v-model="listQuery.ID"
+        placeholder="ID"
+        style="width: 200px;"
+        class="filter-item"
+      />
       <!-- 搜索按钮 -->
       <el-button
         v-waves
@@ -10,7 +15,8 @@
         type="primary"
         icon="el-icon-search"
         @click="findByUserId"
-      >搜索</el-button>
+        >搜索</el-button
+      >
       <!-- 添加按钮 -->
       <el-button
         class="filter-item"
@@ -18,7 +24,8 @@
         type="primary"
         icon="el-icon-edit"
         @click="handleCreate"
-      >添加</el-button>
+        >添加</el-button
+      >
       <!-- 导出按钮 -->
       <el-button
         v-waves
@@ -27,7 +34,8 @@
         type="primary"
         icon="el-icon-delete"
         @click="deleteListComfirm"
-      >删除</el-button>
+        >删除</el-button
+      >
       <!-- 审核人 选择框 -->
       <!-- <el-checkbox
         v-model="showReviewer"
@@ -52,9 +60,18 @@
       <el-checkbox-group v-model="checked" :label="checked">
         <!-- 一列的开始 -->
         <!-- 排序 -->
-        <el-table-column label prop="id" align="center" width="80" :class-name="getSortClass('id')">
+        <el-table-column
+          label
+          prop="id"
+          align="center"
+          width="80"
+          :class-name="getSortClass('id')"
+        >
           <template slot-scope="{ row }">
-            <el-checkbox key="{{row.id}}" @change="handleCheckedCitiesChange(row.id,$event)"></el-checkbox>
+            <el-checkbox
+              key="{{row.id}}"
+              @change="handleCheckedCitiesChange(row.id, $event)"
+            ></el-checkbox>
             <!-- <span>{{ row.id }}</span> -->
           </template>
         </el-table-column>
@@ -112,10 +129,17 @@
       </el-table-column>
       <!-- 需要添加字段的话可以直接加 -->
 
-      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column
+        label="操作"
+        align="center"
+        width="230"
+        class-name="small-padding fixed-width"
+      >
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">编辑</el-button>
+          <el-button type="primary" size="mini" @click="handleUpdate(row)"
+            >编辑</el-button
+          >
           <!-- <el-button size="mini" type="success" @click="handleModifyStatus(row, 'published')">发布</el-button> -->
           <!-- <el-button size="mini" type="danger" @click="deleteUserConfirm(row)">删除</el-button> -->
         </template>
@@ -162,7 +186,10 @@
         </el-form-item>
         <!-- 第二个字段 -->
         <el-form-item label="账号">
-          <el-input v-model="temp.account" :disabled="dialogStatus =='update'" />
+          <el-input
+            v-model="temp.account"
+            :disabled="dialogStatus == 'update'"
+          />
         </el-form-item>
         <!-- 第三个字段 -->
         <el-form-item label="密码">
@@ -173,7 +200,7 @@
           <el-col :span="12">
             <el-dropdown @command="handleCommand">
               <span class="el-dropdown-link">
-                {{temp.gender}}
+                {{ temp.gender }}
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -215,7 +242,8 @@
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
-        >确定</el-button>
+          >确定</el-button
+        >
       </div>
     </el-dialog>
   </div>
