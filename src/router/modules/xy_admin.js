@@ -7,7 +7,7 @@ const xy_admin = {
     alwaysShow: true,
     // constantRoutes: true,
     meta: {
-        title: '管理员管理', //这个地方就是写 模块名字
+        title: '管理员信息管理', //这个地方就是写 模块名字
         icon: 'peoples',
     },
     children: [{
@@ -16,7 +16,7 @@ const xy_admin = {
             import ('@/views/xy_admin/adminStatus'),
         name: 'xy_adminStatus',
         meta: {
-            title: '管理员统计',
+            title: '管理员信息统计',
             roles: ["000", "003"]
         }
     }, {
@@ -25,7 +25,7 @@ const xy_admin = {
             import ('@/views/xy_admin/adminManage'),
         name: 'xy_adminManage',
         meta: {
-            title: '管理员管理',
+            title: '管理员信息管理',
             roles: ["000", "003"]
         }
     }]

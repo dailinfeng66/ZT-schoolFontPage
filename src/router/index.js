@@ -9,9 +9,11 @@ import Layout from "@/layout";
 /* Router Modules */
 
 import xy_lostAndFound from "./modules/xy_lostAndFound";
-import xy_secondHand from "./modules/xy_secondHand"
-import xy_admin from "./modules/xy_admin"
-import xy_financeManage from "./modules/xy_financeManage"
+import xy_secondHand from "./modules/xy_secondHand";
+import xy_admin from "./modules/xy_admin";
+import xy_financeManage from "./modules/xy_financeManage";
+import xy_audit from "./modules/xy_audit";
+import xy_dynamic from "./modules/xy_dynamic";
 export const constantRoutes = [{
         path: "/redirect",
         component: Layout,
@@ -50,7 +52,9 @@ export const constantRoutes = [{
     xy_lostAndFound,
     xy_secondHand,
     xy_admin,
-    xy_financeManage
+    xy_financeManage.
+    xy_dynamic,
+    xy_audit
 
 ];
 
