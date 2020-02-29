@@ -7,7 +7,7 @@ const xy_lostAndFound = {
     alwaysShow: true,
     // constantRoutes: true,
     meta: {
-        title: '失物招领管理', //这个地方就是写 模块名字
+        title: '失物招领信息管理', //这个地方就是写 模块名字
         icon: 'component',
     },
     children: [{
@@ -16,7 +16,7 @@ const xy_lostAndFound = {
                 import ('@/views/xy_lostAndFound/xy_lostAndFoundStatis'),
             name: 'xy_lostAndFoundStatis',
             meta: {
-                title: '失物招领统计',
+                title: '失物招领信息统计',
                 roles: ["001", "000"]
             }
         },
@@ -36,7 +36,7 @@ const xy_lostAndFound = {
                 import ('@/components/editLostAndFound'),
             name: 'editLostAndFound',
             meta: {
-                title: '失物招领编辑',
+                title: '失物招领信息编辑',
                 noCache: true,
                 roles: ["001", "000"],
                 activeMenu: '@/views/xy_lostAndFound/xy_lostAndFound'

@@ -7,7 +7,7 @@ const xy_secondHand = {
     alwaysShow: true,
     // constantRoutes: true,
     meta: {
-        title: '二手平台管理', //这个地方就是写 模块名字
+        title: '二手平台信息管理', //这个地方就是写 模块名字
         icon: 'tree-table',
 
     },
@@ -17,7 +17,7 @@ const xy_secondHand = {
                 import ('@/views/xy_secondHand/platformStatistics'),
             name: 'platformStatistics',
             meta: {
-                title: '平台统计',
+                title: '商品信息统计',
                 roles: ['000']
             }
         },
@@ -27,7 +27,7 @@ const xy_secondHand = {
                 import ('@/views/xy_secondHand/goodsManage'),
             name: 'goodsManage',
             meta: {
-                title: '商品管理',
+                title: '商品信息管理',
                 roles: ['000']
             }
         },
@@ -37,7 +37,7 @@ const xy_secondHand = {
                 import ('@/views/xy_secondHand/goodsManage/goodsDetail'),
             name: 'goodsDetails',
             meta: {
-                title: '商品详情',
+                title: '商品信息详情',
                 noCache: true,
                 roles: ['000']
                     // activeMenu: '@/views/xy_secondHand/goodsManage'
@@ -50,7 +50,7 @@ const xy_secondHand = {
                 import ('@/views/xy_secondHand/catalogManage'),
             name: 'catalogManage',
             meta: {
-                title: '分类管理',
+                title: '分类信息管理',
                 roles: ['000']
             }
         },
@@ -60,7 +60,7 @@ const xy_secondHand = {
                 import ('@/views/xy_secondHand/orderManage'),
             name: 'orderManage',
             meta: {
-                title: '订单管理',
+                title: '订单信息管理',
                 roles: ['000']
             }
         },
