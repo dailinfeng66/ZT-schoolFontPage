@@ -22,3 +22,21 @@
            });
        }
    }
+
+   /**
+    * 弹窗  --->  警告弹窗
+    * @param {} title 
+    * @param {*} content 
+    * @param {*} _this 
+    */
+   export function alertWarning(title, content, _this) {
+       _this.$alert(content, title, {
+           confirmButtonText: '确定',
+           callback: action => {
+               this.$message({
+                   type: 'info',
+                   message: `action: ${ action }`
+               });
+           }
+       });
+   }

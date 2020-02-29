@@ -11,6 +11,7 @@ import Layout from "@/layout";
 import xy_lostAndFound from "./modules/xy_lostAndFound";
 import xy_secondHand from "./modules/xy_secondHand"
 import xy_admin from "./modules/xy_admin"
+import xy_financeManage from "./modules/xy_financeManage"
 export const constantRoutes = [{
         path: "/redirect",
         component: Layout,
@@ -48,7 +49,8 @@ export const constantRoutes = [{
      */
     xy_lostAndFound,
     xy_secondHand,
-    xy_admin
+    xy_admin,
+    xy_financeManage
 
 ];
 
