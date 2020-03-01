@@ -48,3 +48,10 @@ export function auditPass(data1) {
       data: data1
     })
   }
+//根据TopicId查询审核信息
+export function getAuditInfo(topicId) {
+  return request({
+    url: baseUrl + '/audit_log/'+topicId,
+    method: 'get',
+  })
+}

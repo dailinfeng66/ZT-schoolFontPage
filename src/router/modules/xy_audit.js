@@ -17,7 +17,7 @@ const xy_audit = {
         name: 'xy_auditStatus',
         meta: {
             title: '审核信息统计',
-            roles: ["000", "003"]
+            roles:  ["000", "001","002","003","004","005"]
         }
     }, {
         path: 'xy_auditManage',
@@ -26,13 +26,13 @@ const xy_audit = {
         name: 'xy_auditManage',
         meta: {
             title: '审核信息管理',
-            roles: ["000", "003"]
+            roles: ["000", "002","003","005"]
         }
     },
     {
-        path: 'xy_auditManage',
+        path: 'xy_auditInfo',
         component: () =>
-            import ('@/views/xy_audit/xy_auditManage'),
+            import ('@/views/xy_audit/xy_auditInfo'),
         name: 'xy_auditManage',
         meta: {
             title: '审核信息查看',

@@ -17,7 +17,7 @@ const xy_dynamic = {
         name: 'xy_dynamicStatus',
         meta: {
             title: '动态信息统计',
-            roles: ["000", "003"]
+            roles: ["000", "001","002","003","004","005"]
         }
     }, {
         path: 'xy_dynamicManage',
