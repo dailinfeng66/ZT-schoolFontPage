@@ -375,10 +375,7 @@ export default {
   },
   created() {
     //加载列表数据
-    this.getFinanceMsg({
-      pn: 1,
-      ps: 10
-    });
+    this.getFinanceMsg(this.listQuery);
     // 加载角色信息
     this.getAllGrades();
     //获取管理员角色
