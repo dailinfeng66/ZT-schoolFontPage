@@ -649,7 +649,7 @@ export default {
         // result.push(temp);
       });
       // this.adminSelectGrade = result;
-      console.log(result);
+      // console.log(result);
     },
     // 展示管理员信息
     async showAdmins(data) {

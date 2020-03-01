@@ -18,14 +18,6 @@
         @click="getM"
         >搜索</el-button
       >
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-        >添加</el-button
-      >
       <el-select
         @change="findByGrade(selectGrade)"
         v-model="selectGrade"
@@ -40,6 +32,7 @@
         >
         </el-option>
       </el-select>
+
       <el-select
         v-if="adminRoles == '000' ? true : false"
         @change="findBySchool(selectSchool)"
@@ -54,7 +47,7 @@
         >
         </el-option>
       </el-select>
-      <!-- <span class="demonstration">时间段筛选:</span>
+      <span class="demonstration">时间段筛选:</span>
       <el-date-picker
         @change="changeTime(timeRange)"
         v-model="timeRange"
@@ -65,17 +58,16 @@
         end-placeholder="结束日期"
         align="right"
       >
-      </el-date-picker> -->
+      </el-date-picker>
     </div>
 
-    <!-- 以下是表格内容 -->
+    <!-- 以下是表格内容      v-if="dataFlag"-->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
       fit
-      v-if="dataFlag"
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
@@ -99,7 +91,7 @@
         </el-table-column> -->
       <el-table-column label="角色" width align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.grade }}</span>
+          <span>{{ row.gradeRole }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" width align="center">
@@ -112,21 +104,11 @@
           <span>{{ row.schoolId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width align="center">
+      <el-table-column label="审核数量" width align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.createtime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
+          <span>{{ row.judgeNums }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="更改时间" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.updatetime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column label="状态" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.goodsJudgeStatus }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column
         label="操作"
         align="center"
@@ -227,7 +209,13 @@
 </template>
 
 <script>
-import { alertMsg } from "@/api/utils/remind";  
+import {
+  getSchoolNameById,
+  getSchoolIdByName,
+  getGrades
+} from "@/api/xy_admin";
+import { findAllFinanceJudgeMsg } from "@/api/xy_financeManage";
+import { alertMsg } from "@/api/utils/remind";
 import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
@@ -402,8 +390,69 @@ export default {
       return this.routes;
     }
   },
-  created() {},
+  created() {
+    //加载列表数据
+    this.getFinanceMsg({
+      pn: 1,
+      ps: 10
+    });
+    // 加载角色信息
+    this.getAllGrades();
+    //获取管理员角色
+    this.adminRoles = sessionStorage.getItem("roles");
+  },
   methods: {
+    //获取列表数据
+    async getFinanceMsg(condition) {
+      this.listLoading = true;
+      // const res = await
+      let _this = this;
+      findAllFinanceJudgeMsg(condition).then(res => {
+        let resList = res.queryResult.list;
+        resList.map(item => {
+          // 转化学校
+          item.schoolId = getSchoolNameById(item.schoolId); //把ID转化为名字
+          //转化状态
+          if (item.state == "1") {
+            item.state = "正常";
+          }
+          if (item.state == "0") {
+            item.state = "禁用";
+          }
+        });
+        _this.list = resList;
+        _this.total = res.queryResult.total;
+        _this.listLoading = false;
+      });
+    },
+    // 加载角色信息
+    async getAllGrades() {
+      const res = await getGrades();
+      this.adminSelectGrade = [];
+      let result = [];
+      res.queryResult.list.map(item => {
+        let temp = {
+          value: item.grade,
+          label: item.role
+        };
+        this.adminSelectGrade.push(temp);
+      });
+    },
+    //根据角色选择
+    findByGrade() {
+      let temp = this.selectSchool;
+      if (temp == "00000") {
+        //点全部学校的时候应该是显示所有的学校而不是  "全部学校"
+        temp = "";
+      }
+      let condition = {
+        grade: val,
+        schoolId: temp,
+        pn: 1,
+        ps: 10
+      };
+      this.getFinanceMsg(condition);
+    },
     /**
      * 下面的方法不知道有什么用 但是就是不能动
      */
