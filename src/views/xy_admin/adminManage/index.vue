@@ -487,10 +487,7 @@ export default {
     }
   },
   created() {
-    this.showAdmins({
-      pn: 1,
-      ps: 10
-    }); //加载用户信息
+    this.showAdmins(this.listQuery); //加载用户信息
     this.getAllGrades(); //加载管理员信息
     this.adminRoles = sessionStorage.getItem("roles");
   },
