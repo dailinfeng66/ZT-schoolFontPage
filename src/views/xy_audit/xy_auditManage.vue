@@ -18,6 +18,7 @@
         @click="findAll(listQuery)"
       >主题ID搜索</el-button>
 
+      <!-- 开始时间和结束时间 -->
       <el-date-picker
         class="filter-item"
         type="datetime"
@@ -35,7 +36,7 @@
         style="width: 13 %;"
         @change="findAll(listQuery)"
       ></el-date-picker>
-
+    <!-- 选择学校 -->
       <el-select
         class="filter-item"
         v-if="adminRoles == '000' ? true : false"
@@ -95,35 +96,20 @@
           <span>{{ row.type }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="内容" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.topicContent }}</span>
-        </template>
-      </el-table-column>-->
+ 
       <el-table-column label="发布时间" class-name="status-col" width="150">
         <template slot-scope="{ row }">
           <span>{{ row.createDate | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="图片(待定)" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.topicPics }}</span>
-        </template>
-      </el-table-column>-->
-      <!-- <el-table-column label="状态" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.status }}</span>
-        </template>
-      </el-table-column>-->
-
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
-          <el-button type="primary" size="small" @click="handleDetail(row)">审核</el-button>
+          <el-button type="primary" size="small" @click="handleAudit(row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 下面是修改操作的东西 -->
+    <!-- 分页的配置 -->
     <pagination
       v-show="total > 0"
       :total="total"
@@ -132,6 +118,7 @@
       @pagination="findAll(listQuery)"
     />
 
+    <!-- 审核的弹出框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -140,17 +127,17 @@
         label-width="70px"
         style="width: 300px; margin-left:50px;"
       >
-      内容：{{detail.topicContent}}
-      图片：
+   
+       <el-form-item label="内容:">
+           <textarea style="width:500px;height:300px" v-model="detail.topicContent" readonly></textarea>
+        </el-form-item>
+         <el-form-item label="图片">  
       <div>
-        <img :src="detail.pics[0]" alt />
-        <img :src="detail.pics[1]" alt />
-        <img :src="detail.pics[2]" alt />
+        <img style="width:100px;height:100px" :src="detail.pics[0]" alt />
+        <img style="width:100px;height:100px" :src="detail.pics[1]" alt />
+        <img style="width:100px;height:100px" :src="detail.pics[2]" alt />
       </div>
-
-     
-
-
+         </el-form-item>
        <el-form-item label="原因">
           <el-input  v-model="audit.reason" />
         </el-form-item>
@@ -172,7 +159,7 @@ import {
   auditPass
 } from "@/api/xy_dynamic";
 import { getSchoolId } from "@/utils/auth";
-import { alertMsg } from "@/api/utils/remind";
+import { alertMsg,alertWarning } from "@/api/utils/remind";
 
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
@@ -214,32 +201,25 @@ export default {
   },
   data() {
     return {
+      //详情的集合
       detail: {
         topicContent: "",
         pics: []
       },
+      //审核传入的学校，主题Id  和原因
       audit: {
         topicId: "",
         reason: ""
       },
+      //角色名
       adminRoles: "",
-      show: "true",
-      id: "",
-      query: "",
-      routes: [],
       dialogVisible: false,
-      dialogType: "new",
-      checkStrictly: false,
-      defaultProps: {
-        children: "children",
-        label: "name"
-      },
-      tableKey: 0,
       // 这个里面就是 存的数据
       list: null,
       // 这个是数据的总长度-->多少条
       total: 0,
       listLoading: true,
+      //查询条件
       listQuery: {
         ps: 10, //每页大小
         pn: 1, //第几页
@@ -252,24 +232,12 @@ export default {
         startCreateDate: "",
         endCreateDate: ""
       },
-      importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
-      statusOptions: ["published", "draft", "deleted"],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        name: "",
-        description: ""
-      },
+      //详情页面
       dialogFormVisible: false,
       dialogStatus: "",
       textMap: {
         detail: "信息详情"
       },
-      dialogPvVisible: false,
-      pvData: [],
-
-      downloadLoading: false
     };
   },
   computed: {
@@ -280,6 +248,7 @@ export default {
   created() {
     // 传的参数就是 第几个页面 1就是 第一页 开始的时候
     this.findAll(this.listQuery);
+    //获取角色名
     this.adminRoles = sessionStorage.getItem("roles");
     // this.getRoutes();
   },
@@ -289,6 +258,7 @@ export default {
       //表格序号
       return (this.listQuery.pn - 1) * this.listQuery.ps + $index + 1;
     },
+    //查询所有，带条件
     async findAll(data) {
       this.listLoading = true;
       const res = await queryDynamic(data);
@@ -310,8 +280,8 @@ export default {
       this.total = res.queryResult.total;
       this.listLoading = false;
     },
-
-    handleDetail(row) {
+    //审核
+    handleAudit(row) {
       this.temp = Object.assign({}, row); // copy obj
       this.detail.pics = row.topicPics.split(",");
       this.audit.topicId = row.topicId;
@@ -321,54 +291,27 @@ export default {
       this.detail.topicContent = row.topicContent;
       this.dialogFormVisible = true;
     },
-    // updateData() {
-    //   this.$refs["dataForm"].validate(valid => {
-    //     if (valid) {
-    //       const tempData = Object.assign({}, this.temp);
-    //       updateRole(tempData).then(() => {
-    //         for (const v of this.list) {
-    //           if (v.id === this.temp.id) {
-    //             const index = this.list.indexOf(v);
-    //             this.list.splice(index, 1, this.temp);
-    //             break;
-    //           }
-    //         }
-    //         this.dialogFormVisible = false;
-    //         this.$notify({
-    //           title: "成功",
-    //           message: "更新成功",
-    //           type: "success",
-    //           duration: 2000
-    //         });
-    //       });
-    //     }
-    //   });
-    // },
-    async handleDelete(row) {
-      let topicIds = new Array();
-      topicIds[0] = row.topicId;
-      this.audit.topicID = row.topicID;
-      //  const res =  deleteDynamic(topicIds).then(() => {
-      //    console.log(res+"11111111");
-      //     alertMsg(res,"删除",this)
-      //     this.findAll(this.listQuery);
-      //   });
-      const res = await deleteDynamic(topicIds);
-      this.findAll(this.listQuery);
-    },
-    auditPass() {
+    //审核通过
+    async auditPass() {
       if (this.audit.reason == null || this.audit.reason == "") {
-        alert("请填写原因");
+         alertWarning("警告","请填写原因",this);
       }else{
-          auditPass(this.audit);
+           const res = await auditPass(this.audit);
+           alertMsg(res,"",this)
+          this.findAll(this.listQuery);
+          this.dialogFormVisible = false;
       }
 
     },
-    auditNotPass() {
+    //审核不通过
+    async auditNotPass() {
       if (this.audit.reason == null || this.audit.reason == "") {
-        alert("请填写原因");
+         alertWarning("警告","请填写原因",this);
       }else{
-           auditNotPass(this.audit);
+          const res = await  auditNotPass(this.audit);
+          alertMsg(res,"",this)
+          this.findAll(this.listQuery);
+          this.dialogFormVisible = false;
       }
     }
   }

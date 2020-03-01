@@ -117,21 +117,12 @@
           <span>{{ row.type }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="内容" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.topicContent }}</span>
-        </template>
-      </el-table-column>-->
+      
       <el-table-column label="发布时间" class-name="status-col" width="150">
         <template slot-scope="{ row }">
           <span>{{ row.createDate | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="图片(待定)" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.topicPics }}</span>
-        </template>
-      </el-table-column>-->
       <el-table-column label="状态" width align="center">
         <template slot-scope="{ row }">
           <span>{{ row.status }}</span>
@@ -162,16 +153,19 @@
         label-position="left"
         label-width="70px"
         style="width: 300px; margin-left:50px;"
-      ></el-form>
+      >
 
-        内容：{{detail.topicContent}}
-        图片：
-        <div>
-           <img :src="detail.pics[0]" alt="">
-           <img :src="detail.pics[1]" alt="">
-           <img :src="detail.pics[2]" alt="">
-        </div>
-
+         <el-form-item label="内容:">
+           <textarea style="width:500px;height:300px" v-model="detail.topicContent" readonly></textarea>
+        </el-form-item>
+         <el-form-item label="图片">  
+      <div>
+        <img style="width:100px;height:100px" :src="detail.pics[0]" alt />
+        <img style="width:100px;height:100px" :src="detail.pics[1]" alt />
+        <img style="width:100px;height:100px" :src="detail.pics[2]" alt />
+      </div>
+         </el-form-item>
+</el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">确定</el-button>
       </div>
@@ -224,22 +218,13 @@ export default {
   },
   data() {
     return {
+      //详情的内容。和pics
       detail:{
         topicContent:"",
         pics:[],
       },
+      //角色名
       adminRoles: "",
-      show: "true",
-      id: "",
-      query: "",
-      routes: [],
-      dialogVisible: false,
-      dialogType: "new",
-      checkStrictly: false,
-      defaultProps: {
-        children: "children",
-        label: "name"
-      },
       tableKey: 0,
       // 这个里面就是 存的数据
       list: null,
@@ -258,24 +243,12 @@ export default {
         startCreateDate: "",
         endCreateDate: ""
       },
-      importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
-      statusOptions: ["published", "draft", "deleted"],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        name: "",
-        description: ""
-      },
+
       dialogFormVisible: false,
-      dialogStatus: "",
+  
       textMap: {
         detail: "信息详情"
       },
-      dialogPvVisible: false,
-      pvData: [],
-
-      downloadLoading: false
     };
   },
   computed: {
@@ -334,39 +307,12 @@ export default {
       this.dialogFormVisible = true;
       
     },
-    // updateData() {
-    //   this.$refs["dataForm"].validate(valid => {
-    //     if (valid) {
-    //       const tempData = Object.assign({}, this.temp);
-    //       updateRole(tempData).then(() => {
-    //         for (const v of this.list) {
-    //           if (v.id === this.temp.id) {
-    //             const index = this.list.indexOf(v);
-    //             this.list.splice(index, 1, this.temp);
-    //             break;
-    //           }
-    //         }
-    //         this.dialogFormVisible = false;
-    //         this.$notify({
-    //           title: "成功",
-    //           message: "更新成功",
-    //           type: "success",
-    //           duration: 2000
-    //         });
-    //       });
-    //     }
-    //   });
-    // },
     async handleDelete(row) {
       let topicIds = new Array();
       topicIds[0] = row.topicId;
-      //  const res =  deleteDynamic(topicIds).then(() => {
-      //    console.log(res+"11111111");
-      //     alertMsg(res,"删除",this)
-      //     this.findAll(this.listQuery);
-      //   });
       const res = await deleteDynamic(topicIds);
-        this.findAll(this.listQuery);
+      alertMsg(res,"删除",this)
+      this.findAll(this.listQuery);
     }
   }
 };
