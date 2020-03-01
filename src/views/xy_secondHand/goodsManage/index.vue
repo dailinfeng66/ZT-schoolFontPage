@@ -328,8 +328,8 @@ export default {
       listLoading: false,
       listQuery: {
         pn: 1, //第几页
-        ps: 10, //每页大小
-        catalogId: "0"
+        ps: 10//每页大小
+        // catalogId: "0"
       },
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
@@ -378,10 +378,7 @@ export default {
   },
   created() {
     this.findAllCatalog1();
-    this.shouGoodsMsg({
-      pn: 1,
-      ps: 10
-    });
+    this.shouGoodsMsg(this.listQuery);
   },
   methods: {
     // 更改时间操作
