@@ -52,7 +52,7 @@ export const constantRoutes = [{
     xy_lostAndFound,
     xy_secondHand,
     xy_admin,
-    xy_financeManage.
+    xy_financeManage,
     xy_dynamic,
     xy_audit
 
