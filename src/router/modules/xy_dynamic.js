@@ -8,7 +8,7 @@ const xy_dynamic = {
     // constantRoutes: true,
     meta: {
         title: '动态信息管理', //这个地方就是写 模块名字
-        icon: 'tree-table',
+        icon: 'message',
     },
     children: [{
         path: 'xy_dynamicStatus',

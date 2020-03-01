@@ -75,7 +75,6 @@
       :data="list"
       border
       fit
-      v-if="dataFlag"
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
@@ -320,8 +319,6 @@ import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getRoles } from "../../../api/role";
-
 const calendarTypeOptions = [
   {
     key: "CN",
@@ -418,7 +415,6 @@ export default {
       adminRoles: "null",
       adminSelectGrade: null, //角色列表
       timeRange: null, //时间段的选择数据
-      dataFlag: false, //加载数据的flag
       createAdminTemp: {
         loginName: "",
         loginPassword: "",
@@ -654,6 +650,7 @@ export default {
     // 展示管理员信息
     async showAdmins(data) {
       // 加载管理员信息
+      this.listLoading = true;
       const res = await findAdmins(data);
       let resList = res.queryResult.list;
       resList.map(item => {
@@ -667,7 +664,7 @@ export default {
       });
       this.list = resList;
       this.total = res.queryResult.total;
-      this.dataFlag = true;
+      this.listLoading = false;
     },
     // 禁用管理员
     async disableAdmin(row) {

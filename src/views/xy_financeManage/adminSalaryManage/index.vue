@@ -118,24 +118,7 @@
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
           <el-button type="primary" size="small" @click="edit(row)"
-            >编辑</el-button
-          >
-          <el-button type="primary" size="small" @click="resetPass(row)"
-            >重置密码</el-button
-          >
-          <el-button
-            v-if="row.state == '正常'"
-            type="danger"
-            size="small"
-            @click="disableAdmin(row)"
-            >禁用</el-button
-          >
-          <el-button
-            v-if="row.state == '禁用'"
-            type="success"
-            size="small"
-            @click="ableAdmin(row)"
-            >启用</el-button
+            >查看详情</el-button
           >
           <!-- <el-button type="success">编辑</el-button> -->
         </template>
@@ -439,7 +422,9 @@ export default {
       });
     },
     //根据角色选择
-    findByGrade() {
+    findByGrade(val) {
+      let date1 = new Date(this.timeRange[0]);
+      let date2 = new Date(this.timeRange[1]);
       let temp = this.selectSchool;
       if (temp == "00000") {
         //点全部学校的时候应该是显示所有的学校而不是  "全部学校"
@@ -448,10 +433,58 @@ export default {
       let condition = {
         grade: val,
         schoolId: temp,
+        endTime: date2,
+        startTime: date1,
         pn: 1,
         ps: 10
       };
       this.getFinanceMsg(condition);
+    },
+    //根据学校筛选
+    findBySchool(val) {
+      let date1 = new Date(this.timeRange[0]);
+      let date2 = new Date(this.timeRange[1]);
+      let temp = val;
+      if (val == "00000") {
+        temp = "";
+      }
+      let conditions = {
+        grade: this.selectGrade,
+        pn: 1,
+        ps: 10,
+        endTime: date2,
+        startTime: date1,
+        schoolId: temp
+      };
+      this.getFinanceMsg(conditions);
+    },
+    // 根据时间筛选
+    changeTime(val) {
+      let temp = this.selectSchool;
+      if (temp == "00000") {
+        //点全部学校的时候应该是显示所有的学校而不是  "全部学校"
+        temp = "";
+      }
+      let date1 = new Date(val[0]);
+      let date2 = new Date(val[1]);
+      let conditions = {
+        pn: 1,
+        ps: 10,
+        endTime: date2,
+        startTime: date1,
+        grade: this.selectGrade,
+        schoolId: temp
+      };
+      this.getFinanceMsg(conditions);
+    },
+    // 根据用户名搜索用户
+    getM() {
+      let queryCondition = {
+        pn: 1,
+        ps: 10,
+        loginName: this.userName
+      };
+      this.getFinanceMsg(queryCondition);
     },
     /**
      * 下面的方法不知道有什么用 但是就是不能动
