@@ -328,7 +328,11 @@ export default {
       listLoading: false,
       listQuery: {
         pn: 1, //第几页
+<<<<<<< HEAD
         ps: 10 //每页大小
+=======
+        ps: 10//每页大小
+>>>>>>> errortemp
         // catalogId: "0"
       },
       importanceOptions: [1, 2, 3],
