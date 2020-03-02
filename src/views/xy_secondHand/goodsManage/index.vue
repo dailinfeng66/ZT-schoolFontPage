@@ -72,7 +72,6 @@
       :data="list"
       border
       fit
-      v-if="dataFlag"
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
@@ -431,7 +430,7 @@ export default {
     },
     // 查询商品信息
     async shouGoodsMsg(data) {
-      this.dataFlag = false;
+      this.listLoading = true;
       const res1 = await findGoods(data);
       let temp = res1.queryResult.list;
       // 格式化时间和状态
@@ -446,7 +445,7 @@ export default {
 
       this.list = temp;
       this.total = res1.queryResult.total;
-      this.dataFlag = true;
+      this.listLoading = false;
     },
     // 一级分类下拉选择框选中事件   val为选中一级分类的id
     async selectCatalog(val) {
