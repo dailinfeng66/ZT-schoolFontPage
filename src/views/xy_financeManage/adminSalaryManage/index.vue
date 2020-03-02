@@ -210,7 +210,8 @@
 </template>
 
 <script>
-import { alertMsg } from "@/api/utils/remind";  
+// import {getFinanceMsg} from "@/api/x"
+import { alertMsg } from "@/api/utils/remind";
 import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
