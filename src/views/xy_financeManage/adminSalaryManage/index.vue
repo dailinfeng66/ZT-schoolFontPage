@@ -18,14 +18,6 @@
         @click="getM"
         >搜索</el-button
       >
-      <el-button
-        class="filter-item"
-        style="margin-left: 10px;"
-        type="primary"
-        icon="el-icon-edit"
-        @click="handleCreate"
-        >添加</el-button
-      >
       <el-select
         @change="findByGrade(selectGrade)"
         v-model="selectGrade"
@@ -40,6 +32,7 @@
         >
         </el-option>
       </el-select>
+
       <el-select
         v-if="adminRoles == '000' ? true : false"
         @change="findBySchool(selectSchool)"
@@ -54,7 +47,7 @@
         >
         </el-option>
       </el-select>
-      <!-- <span class="demonstration">时间段筛选:</span>
+      <span class="demonstration">时间段筛选:</span>
       <el-date-picker
         @change="changeTime(timeRange)"
         v-model="timeRange"
@@ -65,17 +58,16 @@
         end-placeholder="结束日期"
         align="right"
       >
-      </el-date-picker> -->
+      </el-date-picker>
     </div>
 
-    <!-- 以下是表格内容 -->
+    <!-- 以下是表格内容      v-if="dataFlag"-->
     <el-table
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
       border
       fit
-      v-if="dataFlag"
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
@@ -99,7 +91,7 @@
         </el-table-column> -->
       <el-table-column label="角色" width align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.grade }}</span>
+          <span>{{ row.gradeRole }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态" width align="center">
@@ -112,21 +104,11 @@
           <span>{{ row.schoolId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width align="center">
+      <el-table-column label="审核数量" width align="center">
         <template slot-scope="{ row }">
-          <span>{{ row.createtime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
+          <span>{{ row.judgeNums }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="更改时间" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.updatetime | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column label="状态" width align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.goodsJudgeStatus }}</span>
-        </template>
-      </el-table-column> -->
       <el-table-column
         label="操作"
         align="center"
@@ -210,7 +192,12 @@
 </template>
 
 <script>
-// import {getFinanceMsg} from "@/api/x"
+import {
+  getSchoolNameById,
+  getSchoolIdByName,
+  getGrades
+} from "@/api/xy_admin";
+import { findAllFinanceJudgeMsg } from "@/api/xy_financeManage";
 import { alertMsg } from "@/api/utils/remind";
 import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
