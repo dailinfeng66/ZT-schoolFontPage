@@ -164,7 +164,7 @@
       :total="total"
       :page.sync="listQuery.pn"
       :limit.sync="listQuery.ps"
-      @pagination="selectCatalog(catalogValue)"
+      @pagination="showAdmins(listQuery)"
     />
     <el-dialog title="重置密码" :visible.sync="resetPassDialog">
       <el-form

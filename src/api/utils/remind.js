@@ -9,14 +9,14 @@
        if (res.code == 10000 || res.code == "10000") {
            _this.$notify({
                title: "成功",
-               message: text + "成功",
+               message: res.message,
                type: "success",
                duration: 2000
            });
        } else {
            _this.$notify({
                title: "失败",
-               message: text + "失败!网络错误",
+               message: res.message,
                type: "error",
                duration: 2000
            });
