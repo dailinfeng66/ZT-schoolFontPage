@@ -165,7 +165,7 @@
       :total="total"
       :page.sync="listQuery.pn"
       :limit.sync="listQuery.ps"
-      @pagination="selectCatalog(catalogValue)"
+      @pagination="shouGoodsMsg(listQuery)"
     />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">

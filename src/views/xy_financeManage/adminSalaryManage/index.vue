@@ -70,7 +70,6 @@
       fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
     >
       <!-- 一列的开始 -->
       <!-- <el-table-column label="管理员ID" prop="id" align="center">
@@ -130,8 +129,9 @@
       :total="total"
       :page.sync="listQuery.pn"
       :limit.sync="listQuery.ps"
-      @pagination="selectCatalog(catalogValue)"
+      @pagination="getFinanceMsg(listQuery)"
     />
+
     <!-- 更改管理员 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
@@ -203,7 +203,6 @@ import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-import { getRoles } from "../../../api/role";
 
 const calendarTypeOptions = [
   {
@@ -384,6 +383,7 @@ export default {
   methods: {
     //获取列表数据
     async getFinanceMsg(condition) {
+      // alert("查询数据");
       this.listLoading = true;
       // const res = await
       let _this = this;
