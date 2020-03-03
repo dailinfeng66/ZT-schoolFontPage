@@ -14,6 +14,7 @@ import xy_admin from "./modules/xy_admin";
 import xy_financeManage from "./modules/xy_financeManage";
 import xy_audit from "./modules/xy_audit";
 import xy_dynamic from "./modules/xy_dynamic";
+import xy_index from "./modules/xy_index";
 export const constantRoutes = [{
         path: "/redirect",
         component: Layout,
@@ -49,6 +50,7 @@ export const constantRoutes = [{
     /**
      * 后面写路由
      */
+    xy_index,
     xy_lostAndFound,
     xy_secondHand,
     xy_admin,
