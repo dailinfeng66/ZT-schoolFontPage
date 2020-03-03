@@ -116,7 +116,7 @@
       >
         <!-- 右边按钮区域 -->
         <template slot-scope="{ row }">
-          <el-button type="primary" size="small" @click="edit(row)"
+          <el-button type="primary" size="small" @click="convertToDetail(row)"
             >查看详情</el-button
           >
           <!-- <el-button type="success">编辑</el-button> -->
@@ -203,7 +203,7 @@ import { getSchoolId } from "@/utils/auth";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
-
+import { setAdminDetailParam } from "@/utils/pageMsg";
 const calendarTypeOptions = [
   {
     key: "CN",
@@ -381,6 +381,24 @@ export default {
     this.adminRoles = sessionStorage.getItem("roles");
   },
   methods: {
+    // 跳转到详情页面
+    convertToDetail(row) {
+      let date1 = null;
+      let date2 = null;
+      if (this.timeRange != null) {
+        date1 = new Date(this.timeRange[0]);
+        date2 = new Date(this.timeRange[1]);
+      }
+      let param = {
+        id: row.id,
+        startTime: date1,
+        endTime: date2
+      };
+      setAdminDetailParam(param);
+      this.$router.push({
+        name: "financeDetail"
+      });
+    },
     //获取列表数据
     async getFinanceMsg(condition) {
       // alert("查询数据");
