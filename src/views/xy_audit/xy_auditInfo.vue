@@ -66,7 +66,7 @@
       </el-table-column>
       <el-table-column label="审核时间" class-name="status-col" width="150">
         <template slot-scope="{ row }">
-          <span>{{ row.audit_date | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
+          <span>{{ row.auditDate | parseTime("{y}-{m}-{d} {h}:{i}") }}</span>
         </template>
       </el-table-column>
     </el-table>
